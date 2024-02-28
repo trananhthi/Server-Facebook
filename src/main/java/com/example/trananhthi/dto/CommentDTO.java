@@ -21,9 +21,11 @@ public class CommentDTO {
 
     public  CommentDTO(Long id, Long postId, UserAccount userAccount, String content, Date createdAt, Date updatedAt)
     {
+        MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
+
         this.id = id;
         this.postId = postId;
-        this.userAccount = MapEntityToDTO.mapUserAccountToDTO(userAccount);
+        this.userAccount = mapEntityToDTO.mapUserAccountToDTO(userAccount);
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

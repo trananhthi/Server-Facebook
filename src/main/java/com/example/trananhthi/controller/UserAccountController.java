@@ -6,7 +6,7 @@ import com.example.trananhthi.dto.UserAccountDTO;
 import com.example.trananhthi.entity.UserAccount;
 import com.example.trananhthi.service.JwtService;
 import com.example.trananhthi.service.UserAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,15 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/user")
+@RequiredArgsConstructor
 public class UserAccountController {
     private final UserAccountService userAccountService;
     private final JwtService jwtService;
-
-    @Autowired
-    public UserAccountController(UserAccountService userAccountService, JwtService jwtService) {
-        this.userAccountService = userAccountService;
-        this.jwtService = jwtService;
-    }
+    private final MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
 
     @GetMapping("/infor")
     public ResponseEntity<UserAccountDTO> getUserInfor(@RequestHeader(name = "Authorization") String token)
@@ -34,7 +30,8 @@ public class UserAccountController {
                 String jwtToken = token.substring(7);
                 String email = jwtService.extractUsername(jwtToken);
                 List<UserAccount> userAccount = userAccountService.getUserByEmail(email);
-                return ResponseEntity.status(HttpStatus.OK).body(MapEntityToDTO.mapUserAccountToDTO(userAccount.get(0)));
+//                MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
+                return ResponseEntity.status(HttpStatus.OK).body(mapEntityToDTO.mapUserAccountToDTO(userAccount.get(0)));
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         } catch (Exception e) {
@@ -49,7 +46,7 @@ public class UserAccountController {
             String jwtToken = token.substring(7);
             String email = jwtService.extractUsername(jwtToken);
             UserAccount userAccount = userAccountService.updatePrivacyDefaultByEmail(email,dto.getPrivacyDefault());
-            return ResponseEntity.ok().body(MapEntityToDTO.mapUserAccountToDTO(userAccount));
+            return ResponseEntity.ok().body(mapEntityToDTO.mapUserAccountToDTO(userAccount));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }

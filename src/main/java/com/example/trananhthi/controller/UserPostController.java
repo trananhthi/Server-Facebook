@@ -9,7 +9,7 @@ import com.example.trananhthi.entity.UserAccount;
 import com.example.trananhthi.entity.UserPost;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,21 +25,14 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/v1/post")
+@RequiredArgsConstructor
 public class UserPostController {
     private final UserPostService userPostService;
     private final UserAccountService userAccountService;
     private final JwtService jwtService;
     private final S3Service s3Service;
     private final PostImageService postImageService;
-
-    @Autowired
-    public UserPostController(UserPostService userPostService, UserAccountService userAccountService, JwtService jwtService, S3Service s3Service, PostImageService postImageService) {
-        this.userPostService = userPostService;
-        this.userAccountService = userAccountService;
-        this.jwtService = jwtService;
-        this.s3Service = s3Service;
-        this.postImageService = postImageService;
-    }
+    private final MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
 
     @PostMapping("/create")
     public ResponseEntity<?> createPost(@RequestHeader(name = "Authorization") String token,@ModelAttribute CreatePostDTO dto,@RequestBody List<MultipartFile> files ) throws IOException {
@@ -47,7 +40,7 @@ public class UserPostController {
             String jwtToken = token.substring(7);
             String email = jwtService.extractUsername(jwtToken);
             UserAccount userAccount = userAccountService.getUserByEmail(email).get(0);
-            UserPost newUserPost = MapEntityToDTO.mapCreatePostDTOToEntity(dto);
+            UserPost newUserPost = mapEntityToDTO.mapCreatePostDTOToEntity(dto);
             newUserPost.setAuthor(userAccount);
             UserPost newPost = userPostService.createNewPost(newUserPost);
             if (newPost.getId() > 0)
@@ -78,7 +71,7 @@ public class UserPostController {
             Pageable pageable = Pageable.unpaged();
             Page<UserPost> userPostList = userPostService.getAllPost(pageable);
             Page<UserPostDTO> userPostDTOList = userPostList.map(userPost -> {
-                UserPostDTO userPostDTO = MapEntityToDTO.mapUserPostToDTO(userPost);
+                UserPostDTO userPostDTO = mapEntityToDTO.mapUserPostToDTO(userPost);
                 userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(), "actived"));
                 return userPostDTO;
             });
@@ -88,7 +81,7 @@ public class UserPostController {
             Pageable pageable = PageRequest.of(page,size);
             Page<UserPost> userPostList = userPostService.getAllPost(pageable);
             Page<UserPostDTO> userPostDTOList = userPostList.map(userPost -> {
-                UserPostDTO userPostDTO = MapEntityToDTO.mapUserPostToDTO(userPost);
+                UserPostDTO userPostDTO = mapEntityToDTO.mapUserPostToDTO(userPost);
                 userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(), "actived"));
                 return userPostDTO;
             });
@@ -113,7 +106,7 @@ public class UserPostController {
                         postImageService.createImage(postImage);
                     }
                 }
-                UserPostDTO userPostDTO = MapEntityToDTO.mapUserPostToDTO(updatedUserPost);
+                UserPostDTO userPostDTO = mapEntityToDTO.mapUserPostToDTO(updatedUserPost);
                 userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(),"actived"));
                 return ResponseEntity.ok().body(userPostDTO);
             }

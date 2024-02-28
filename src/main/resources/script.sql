@@ -132,6 +132,29 @@ create table shares (
     status varchar(20) default 'active',
     foreign key (post_id) references user_posts(id),
     foreign key (user_id) references user_accounts(id)
-)
+);
+
+CREATE TABLE chat_room (
+    id bigint auto_increment primary key,
+    user1_id bigint NOT NULL,
+    user2_id bigint NOT NULL,
+    room_name text,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status varchar(20) default 'active',
+    FOREIGN KEY (user1_id) REFERENCES user_accounts(id),
+    FOREIGN KEY (user2_id) REFERENCES user_accounts(id)
+);
+
+CREATE TABLE chat_message (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    room_id BIGINT NOT NULL,
+    sender_id BIGINT NOT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(20) DEFAULT 'active',
+    FOREIGN KEY (room_id) REFERENCES chat_room(id),
+    FOREIGN KEY (sender_id) REFERENCES user_accounts(id)
+);
+
 
 

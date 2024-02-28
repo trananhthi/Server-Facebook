@@ -10,28 +10,29 @@ import com.example.trananhthi.entity.UserPost;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MapEntityToDTO {
-    public static UserAccountDTO mapUserAccountToDTO(UserAccount userAccount)
-    {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.convertValue(userAccount,UserAccountDTO.class);
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final MapEntityToDTO instance = new MapEntityToDTO();
 
+    private MapEntityToDTO() {
+        // private constructor thực thi signleton pattern
     }
 
-    public static UserPostDTO mapUserPostToDTO(UserPost userPost)
+    public static MapEntityToDTO getInstance() {
+        return instance;
+    }
+
+    public UserAccountDTO mapUserAccountToDTO(UserAccount userAccount)
     {
-        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.convertValue(userAccount,UserAccountDTO.class);
+    }
+
+    public UserPostDTO mapUserPostToDTO(UserPost userPost)
+    {
         return objectMapper.convertValue(userPost,UserPostDTO.class);
     }
 
-    public static UserPost mapCreatePostDTOToEntity(CreatePostDTO createPostDTO)
+    public UserPost mapCreatePostDTOToEntity(CreatePostDTO createPostDTO)
     {
-        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(createPostDTO,UserPost.class);
-    }
-
-    public static ReactionDTO mapReactionToDTO(Reaction reaction)
-    {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.convertValue(reaction,ReactionDTO.class);
     }
 }

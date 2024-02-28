@@ -20,9 +20,10 @@ public class ReactionDTO {
 
     public  ReactionDTO(Long id, Long postId, UserAccount userAccount, String typeReaction, Date createdAt)
     {
+        MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
         this.id = id;
         this.postId = postId;
-        this.userAccount = MapEntityToDTO.mapUserAccountToDTO(userAccount);
+        this.userAccount = mapEntityToDTO.mapUserAccountToDTO(userAccount);
         this.typeReaction = typeReaction;
         this.createdAt = createdAt;
 
