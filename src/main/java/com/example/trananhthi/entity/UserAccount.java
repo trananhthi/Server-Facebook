@@ -48,4 +48,6 @@ public class UserAccount {
     private Integer loginAttempts;
     @Column(name = "privacy_default")
     private String privacyDefault;
+    @Column(name = "name")
+    private String name;
 }

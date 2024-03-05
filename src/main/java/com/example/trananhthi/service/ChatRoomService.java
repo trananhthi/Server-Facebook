@@ -5,6 +5,7 @@ import com.example.trananhthi.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,6 +36,11 @@ public class ChatRoomService {
         {
             return chatRoom.get();
         }
+    }
+
+    public List<ChatRoom> getChatRoomByUserId(Long userId)
+    {
+        return chatRoomRepository.findChatRoomByUserId1OrUserId2OrderByCreatedAtDesc(userId,userId);
     }
 
     public ChatRoom getChatRoomById(Long roomId)

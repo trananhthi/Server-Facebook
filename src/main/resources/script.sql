@@ -10,6 +10,7 @@ create table user_accounts
     password   varchar(500)                                                                  not null,
     last_name  varchar(50)                                                                  not null default 'User',
     first_name varchar(50)                                                                  not null default 'New',
+    name text,
     phone      varchar(20)                                                                  null,
     birthday date not null,
     `gender` enum('male','female','unknown') not null,
@@ -22,6 +23,22 @@ create table user_accounts
     login_attempts INT default 0 null,
     unique (email)
 );
+
+DELIMITER //
+
+CREATE TRIGGER before_insert_user_accounts
+BEFORE INSERT ON user_accounts
+FOR EACH ROW
+BEGIN
+	SET NEW.avatar = '{"url": "https://s3-hcm-r1.longvan.net/2502-facebook/default_avatar.png"}';
+    SET NEW.name = CONCAT(NEW.first_name, ' ', NEW.last_name);
+END//
+
+DELIMITER ;
+
+
+
+
 
 insert into user_accounts(email,password,first_name,last_name,birthday,gender) values('trananhthi10@gmail.com','123456','thi','tran','2023-10-19','female');
 insert into reactions(post_id,user_id,type_reaction) values('1','13','like');

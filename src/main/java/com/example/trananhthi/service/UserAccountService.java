@@ -89,5 +89,19 @@ public class UserAccountService implements UserDetailsService {
         userAccount.setPrivacyDefault(privacyDefault);
         return userAccountRepository.save(userAccount);
     }
+
+    public List<UserAccount> searchUsersByName(String keyword)
+    {
+        return userAccountRepository.findByNameContaining(keyword);
+    }
+
+    public Map<Long, UserAccount> getUsersByIds(Set<Long> userIds) {
+        List<UserAccount> users = userAccountRepository.findAllByIdIn(userIds);
+        Map<Long, UserAccount> userMap = new HashMap<>();
+        for (UserAccount user : users) {
+            userMap.put(user.getId(), user);
+        }
+        return userMap;
+    }
 }
 

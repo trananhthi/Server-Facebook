@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -27,8 +28,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserAccountService userAccountService;
-    private final RequestMatcher uriMatcher = new AntPathRequestMatcher("/v1/authenticate/**");
-
+    private final RequestMatcher uriMatcher = new OrRequestMatcher(
+            new AntPathRequestMatcher("/v1/authenticate/**"),
+            new AntPathRequestMatcher("/ws/**")
+    );
 
     @Autowired
     public JwtAuthFilter(JwtService jwtService, UserAccountService userAccountService) {

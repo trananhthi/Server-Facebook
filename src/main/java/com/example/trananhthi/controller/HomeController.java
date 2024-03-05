@@ -16,10 +16,7 @@ public class HomeController {
     public HomeController(UserAccountService UserAccountService) {
         this.UserAccountService = UserAccountService;
     }
-    @GetMapping("/{email}")
-    public UserAccount getUserByEmail(@PathVariable String email) {
-        return UserAccountService.getUserByEmail(email).get(0);
-    }
+
     @GetMapping("/id/{id}")
     public Optional<UserAccount> getUserByEmail(@PathVariable Long id) {
         return UserAccountService.getUserById(id);

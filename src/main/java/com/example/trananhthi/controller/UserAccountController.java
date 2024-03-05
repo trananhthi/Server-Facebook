@@ -51,4 +51,11 @@ public class UserAccountController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
+    @GetMapping("/search")
+    public  ResponseEntity<List<UserAccountDTO>> searchByName(@RequestParam String keyword)
+    {
+        List<UserAccount> userAccountList = userAccountService.searchUsersByName(keyword);
+        return ResponseEntity.ok(mapEntityToDTO.mapUserAccountListToDTOList(userAccountList));
+    }
+
 }

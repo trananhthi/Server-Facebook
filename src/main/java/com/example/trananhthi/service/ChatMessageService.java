@@ -10,12 +10,10 @@ import java.util.List;
 @Service
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
-    private final ChatRoomService chatRoomService;
 
     @Autowired
-    public ChatMessageService(ChatMessageRepository chatMessageRepository, ChatRoomService chatRoomService) {
+    public ChatMessageService(ChatMessageRepository chatMessageRepository) {
         this.chatMessageRepository = chatMessageRepository;
-        this.chatRoomService = chatRoomService;
     }
 
     public ChatMessage save(ChatMessage chatMessage) {
