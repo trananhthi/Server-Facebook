@@ -24,21 +24,6 @@ create table user_accounts
     unique (email)
 );
 
-DELIMITER //
-
-CREATE TRIGGER before_insert_user_accounts
-BEFORE INSERT ON user_accounts
-FOR EACH ROW
-BEGIN
-	SET NEW.avatar = '{"url": "https://s3-hcm-r1.longvan.net/2502-facebook/default_avatar.png"}';
-    SET NEW.name = CONCAT(NEW.first_name, ' ', NEW.last_name);
-END//
-
-DELIMITER ;
-
-
-
-
 
 insert into user_accounts(email,password,first_name,last_name,birthday,gender) values('trananhthi10@gmail.com','123456','thi','tran','2023-10-19','female');
 insert into reactions(post_id,user_id,type_reaction) values('1','13','like');
@@ -166,7 +151,7 @@ CREATE TABLE chat_message (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     room_id BIGINT NOT NULL,
     sender_id BIGINT NOT NULL,
-    content TEXT,
+    content text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'active',
     FOREIGN KEY (room_id) REFERENCES chat_room(id),

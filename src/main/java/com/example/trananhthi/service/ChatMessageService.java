@@ -3,6 +3,8 @@ package com.example.trananhthi.service;
 import com.example.trananhthi.entity.ChatMessage;
 import com.example.trananhthi.repository.ChatMessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public class ChatMessageService {
         return chatMessageRepository.save(chatMessage);
     }
 
-    public List<ChatMessage> getChatMessages(Long chatRoomId) {
-        return chatMessageRepository.findChatMessagesByRoomId(chatRoomId);
+    public Page<ChatMessage> getChatMessages(Long chatRoomId, Pageable pageable) {
+        return chatMessageRepository.findChatMessagesByRoomId(chatRoomId, pageable);
     }
 }

@@ -52,6 +52,8 @@ public class UserAccountService implements UserDetailsService {
         userAccount.setRole("ROLE_USER");
         userAccount.setStatus("not_activated");
         userAccount.setTimeCreated(new Date());
+        userAccount.setName(userAccount.getFirstName() + ' ' + userAccount.getLastName());
+        userAccount.setAvatar("{\"url\": \"https://s3-hcm-r1.longvan.net/2502-facebook/default_avatar.png\"}");
         return userAccountRepository.save(userAccount);
     }
 

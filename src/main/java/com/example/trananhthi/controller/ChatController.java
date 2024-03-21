@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -38,8 +39,9 @@ public class ChatController {
     private final MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
 
     @GetMapping("/v1/chat/messages/{roomId}")
-    public ResponseEntity<?> getChatMessages(@PathVariable Long roomId) {
-        return ResponseEntity.ok(chatMessageService.getChatMessages(roomId));
+    public ResponseEntity<?> getChatMessages(@PathVariable Long roomId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "30")  int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return ResponseEntity.ok(chatMessageService.getChatMessages(roomId,pageable));
     }
 
     @MessageMapping("/chat")

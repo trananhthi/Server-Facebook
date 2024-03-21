@@ -1,30 +1,30 @@
 package com.example.trananhthi.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
 import lombok.Data;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
-@Entity
-@Table(name = "chat_message")
-@DynamicInsert
-@DynamicUpdate
+@Document(collection = "chat_message")
 @Data
 public class ChatMessage {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "room_id")
+    private String id;
+    @Field("room_id")
     private Long roomId;
-    @Column(name = "sender_id")
+    @Field("sender_id")
     private Long senderId;
-    @Column(name = "content")
+    @Field("content")
     private String content;
-    @Column(name = "status")
+    @Field("status")
     private String status;
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Field("created_at")
     private Date createdAt;
+
+    public ChatMessage() {
+        this.status = "active";
+        this.createdAt = new Date();
+    }
 }
