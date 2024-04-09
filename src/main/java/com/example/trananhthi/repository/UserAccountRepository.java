@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Repository
 public interface UserAccountRepository extends CrudRepository<UserAccount,Long> {
-    List<UserAccount> findByEmail(String email);
+    Optional<UserAccount> findByEmail(String email);
     List<UserAccount> findByNameContaining(String name);
     @Query("SELECT ua FROM UserAccount ua WHERE ua.id IN :userIds")
     List<UserAccount> findAllByIdIn(Set<Long> userIds);

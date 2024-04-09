@@ -1,10 +1,15 @@
 package com.example.trananhthi.service;
 
+import com.example.trananhthi.common.MapEntityToDTO;
 import com.example.trananhthi.dto.CreatePostDTO;
+import com.example.trananhthi.dto.RestPage;
+import com.example.trananhthi.dto.UserPostDTO;
 import com.example.trananhthi.entity.UserPost;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.repository.UserPostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,13 +20,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@EnableCaching
 public class UserPostService {
     private final UserPostRepository userPostRepository;
-
-    @Autowired
-    public UserPostService( UserPostRepository userPostRepository) {
-        this.userPostRepository = userPostRepository;
-    }
+    private final MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
+    private final PostImageService postImageService;
 
     public UserPost createNewPost(UserPost userPost)
     {
@@ -29,9 +33,17 @@ public class UserPostService {
     }
 
     @Transactional
-    public Page<UserPost> getAllPost(Pageable pageable)
+    @Cacheable("allPost")
+    public RestPage<UserPostDTO> getAllPost(Pageable pageable)
     {
-        return userPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<UserPost> userPostList = userPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<UserPostDTO> userPostDTOList = userPostList.map(userPost -> {
+            UserPostDTO userPostDTO = mapEntityToDTO.mapUserPostToDTO(userPost);
+            userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(), "actived"));
+            return userPostDTO;
+        });
+        return new RestPage<>(userPostDTOList);
+//        return new RestPage<>(userPostRepository.findAllByOrderByCreatedAtDesc(pageable));
     }
 
     public List<UserPost> getAllUserPostsByAuthorId(Long authorId) {

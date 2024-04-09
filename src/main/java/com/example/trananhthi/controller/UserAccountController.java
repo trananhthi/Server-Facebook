@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -29,9 +30,8 @@ public class UserAccountController {
             if (token != null && token.startsWith("Bearer ")) {
                 String jwtToken = token.substring(7);
                 String email = jwtService.extractUsername(jwtToken);
-                List<UserAccount> userAccount = userAccountService.getUserByEmail(email);
-//                MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
-                return ResponseEntity.status(HttpStatus.OK).body(mapEntityToDTO.mapUserAccountToDTO(userAccount.get(0)));
+                Optional<UserAccount> userAccount = userAccountService.getUserByEmail(email);
+                return ResponseEntity.status(HttpStatus.OK).body(mapEntityToDTO.mapUserAccountToDTO(userAccount.orElse(null)));
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         } catch (Exception e) {

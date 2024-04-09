@@ -39,7 +39,7 @@ public class UserPostController {
         if (token != null && token.startsWith("Bearer ")) {
             String jwtToken = token.substring(7);
             String email = jwtService.extractUsername(jwtToken);
-            UserAccount userAccount = userAccountService.getUserByEmail(email).get(0);
+            UserAccount userAccount = userAccountService.getUserByEmail(email).orElse(null);
             UserPost newUserPost = mapEntityToDTO.mapCreatePostDTOToEntity(dto);
             newUserPost.setAuthor(userAccount);
             UserPost newPost = userPostService.createNewPost(newUserPost);
@@ -66,27 +66,16 @@ public class UserPostController {
     @GetMapping("/get")
     public ResponseEntity<Page<UserPostDTO>> getAllPost(@RequestParam(defaultValue = "-1") int page, @RequestParam(defaultValue = "0")  int size)
     {
+        Pageable pageable;
         if(page == -1 || size == 0)
         {
-            Pageable pageable = Pageable.unpaged();
-            Page<UserPost> userPostList = userPostService.getAllPost(pageable);
-            Page<UserPostDTO> userPostDTOList = userPostList.map(userPost -> {
-                UserPostDTO userPostDTO = mapEntityToDTO.mapUserPostToDTO(userPost);
-                userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(), "actived"));
-                return userPostDTO;
-            });
-            return ResponseEntity.ok().body(userPostDTOList);
+            pageable = Pageable.unpaged();
         }
         else{
-            Pageable pageable = PageRequest.of(page,size);
-            Page<UserPost> userPostList = userPostService.getAllPost(pageable);
-            Page<UserPostDTO> userPostDTOList = userPostList.map(userPost -> {
-                UserPostDTO userPostDTO = mapEntityToDTO.mapUserPostToDTO(userPost);
-                userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(), "actived"));
-                return userPostDTO;
-            });
-            return ResponseEntity.ok().body(userPostDTOList);
+            pageable = PageRequest.of(page,size);
         }
+        Page<UserPostDTO> userPostDTOList = userPostService.getAllPost(pageable);
+        return ResponseEntity.ok().body(userPostDTOList);
     }
 
     @PatchMapping("/update/{postID}")

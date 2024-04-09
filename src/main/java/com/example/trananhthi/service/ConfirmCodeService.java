@@ -48,10 +48,10 @@ public class ConfirmCodeService {
     }
     public ConfirmCode createConfirmCode(String email) {
         ConfirmCode confirmCode = new ConfirmCode();
-        List<UserAccount> userAccount = userAccountRepository.findByEmail(email);
+        Optional<UserAccount> userAccount = userAccountRepository.findByEmail(email);
         SecureRandom random = new SecureRandom();
         int code = 100000 + random.nextInt(900000); // Tạo mã ngẫu nhiên từ 100000 đến 999999
-        confirmCode.setUserAccount(userAccount.get(0));
+        confirmCode.setUserAccount(userAccount.orElse(null));
         confirmCode.setExpiryDate(Instant.now().plusMillis(1000*60*5));
         confirmCode.setCode(String.valueOf(code));
         confirmCode = confirmCodeRepository.save(confirmCode);

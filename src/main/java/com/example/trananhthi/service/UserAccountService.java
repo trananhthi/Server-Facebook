@@ -30,7 +30,7 @@ public class UserAccountService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public List<UserAccount> getUserByEmail(String email) {
+    public Optional<UserAccount> getUserByEmail(String email) {
         return userAccountRepository.findByEmail(email);
     }
 
@@ -53,23 +53,23 @@ public class UserAccountService implements UserDetailsService {
         userAccount.setStatus("not_activated");
         userAccount.setTimeCreated(new Date());
         userAccount.setName(userAccount.getFirstName() + ' ' + userAccount.getLastName());
-        userAccount.setAvatar("{\"url\": \"https://s3-hcm-r1.longvan.net/2502-facebook/default_avatar.png\"}");
+        userAccount.setAvatar("https://s3-hcm-r1.longvan.net/2502-facebook/default_avatar.png");
         return userAccountRepository.save(userAccount);
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        List<UserAccount> userAccounts = userAccountRepository.findByEmail(email);
+        Optional<UserAccount> userAccounts = userAccountRepository.findByEmail(email);
         String password;
         List<GrantedAuthority> authorities;
         if(userAccounts.isEmpty()) {
             throw new UsernameNotFoundException("Account does not exist with email = " + email);
         }
-        email = userAccounts.get(0).getEmail();
-        password = userAccounts.get(0).getPassword();
+        email = userAccounts.get().getEmail();
+        password = userAccounts.get().getPassword();
         authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(userAccounts.get(0).getRole()));
+        authorities.add(new SimpleGrantedAuthority(userAccounts.get().getRole()));
 
         return new User(email,password,authorities);
     }
@@ -77,7 +77,7 @@ public class UserAccountService implements UserDetailsService {
     @Transactional
     public UserAccount updatePrivacyDefaultByEmail(String email,String privacyDefault)
     {
-        List<UserAccount> userAccounts = userAccountRepository.findByEmail(email);
+        Optional<UserAccount> userAccounts = userAccountRepository.findByEmail(email);
         List<String> validPrivacyValues = Arrays.asList("friend", "public", "custom","except_friend","specific_friend","only_me");
         if(userAccounts.isEmpty())
         {
@@ -87,7 +87,7 @@ public class UserAccountService implements UserDetailsService {
         {
             throw new CustomException(HttpStatus.BAD_REQUEST.value(), "PrivacyInvalid","Privacy không hợp lệ");
         }
-        UserAccount userAccount =  userAccounts.get(0);
+        UserAccount userAccount =  userAccounts.get();
         userAccount.setPrivacyDefault(privacyDefault);
         return userAccountRepository.save(userAccount);
     }

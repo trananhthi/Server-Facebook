@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,8 +28,8 @@ public class RefreshTokenService {
 
     public RefreshToken createRefreshToken(String email) {
         RefreshToken refreshToken = new RefreshToken();
-        List<UserAccount> userAccount = userAccountRepository.findByEmail(email);
-        refreshToken.setUserAccount(userAccount.get(0));
+        Optional<UserAccount> userAccount = userAccountRepository.findByEmail(email);
+        refreshToken.setUserAccount(userAccount.orElse(null));
         refreshToken.setExpiryDate(Instant.now().plusMillis(1000*60*60*72));
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken = refreshTokenRepository.save(refreshToken);

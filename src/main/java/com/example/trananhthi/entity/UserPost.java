@@ -25,8 +25,6 @@ public class UserPost {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
     private String typePost;
-    @Column(columnDefinition = "json")
-    private String video;
     @OneToOne
     @JoinColumn(name = "parent_post",referencedColumnName = "id")
     private UserPost parentPost;

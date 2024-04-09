@@ -45,7 +45,7 @@ public class CommentController {
             String email = jwtService.extractUsername(jwtToken);
             Comment newComment = new Comment();
             newComment.setUserPost(userPostService.getUserPostByID(postID));
-            newComment.setUserAccount(userAccountService.getUserByEmail(email).get(0));
+            newComment.setUserAccount(userAccountService.getUserByEmail(email).get());
             newComment.setContent(dto.getContent());
             if (commentService.createComment(newComment).getId() > 0)
             {

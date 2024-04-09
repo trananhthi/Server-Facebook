@@ -17,7 +17,7 @@ public class UserAccountDTO {
     private String phone;
     private Date birthday;
     private String gender;
-    private AvatarDTO avatar;
+    private String avatar;
     private Date timeCreated;
     private String privacyDefault;
 }

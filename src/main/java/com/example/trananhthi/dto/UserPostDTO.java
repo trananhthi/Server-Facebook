@@ -19,7 +19,6 @@ public class UserPostDTO {
     private Date updatedAt;
     private String typePost;
     private List<PostImageDTO> image;
-    private String video;
     private UserPost parentPost;
     private Integer view;
     private String privacy;

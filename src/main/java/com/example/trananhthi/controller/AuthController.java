@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -77,7 +76,8 @@ public class AuthController {
         }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
         Object principal = authentication.getPrincipal();
-        if(userAccountService.getUserByEmail(((UserDetails) principal).getUsername()).get(0).getStatus().equals("not_activated"))
+        Optional<UserAccount> userAccount = userAccountService.getUserByEmail(((UserDetails) principal).getUsername());
+        if(userAccount.isPresent() && userAccount.get().getStatus().equals("not_activated"))
         {
             return ResponseEntity.status(HttpStatus.OK).body(new SignUpResponse("","","Tài khoản chưa xác thực email", Base64Encoding.encodeStringToBase64(signUpRequest.getEmail())));
         }
@@ -139,17 +139,17 @@ public class AuthController {
     public ResponseEntity<CustomSuccessResponse> resendConfirmCode(@Param("email") String email)
     {
         String emailRequest = Base64Encoding.decodeBase64ToString(email);
-        List<UserAccount> userAccount = userAccountService.getUserByEmail(emailRequest);
+        Optional<UserAccount> userAccount = userAccountService.getUserByEmail(emailRequest);
         if(userAccount.isEmpty())
         {
             throw new CustomException(HttpStatus.BAD_REQUEST.value(), "InexistAccount","Tài khoản không tồn tại");
         }
-        if(userAccount.get(0).getStatus().equals("activated"))
+        if(userAccount.get().getStatus().equals("activated"))
         {
             throw new CustomException(HttpStatus.BAD_REQUEST.value(), "VerifiedAccount","Tài khoản đã xác thực email");
         }
-        confirmCodeService.deleteAllByUserAccount(userAccount.get(0));
-        sendConfirmCodeEmail(userAccount.get(0));
+        confirmCodeService.deleteAllByUserAccount(userAccount.get());
+        sendConfirmCodeEmail(userAccount.get());
         return ResponseEntity.ok().body(new CustomSuccessResponse("Gửi lại mã xác nhận thành công"));
     }
 

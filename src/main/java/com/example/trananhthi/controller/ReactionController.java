@@ -34,7 +34,7 @@ public class ReactionController {
         if (token != null && token.startsWith("Bearer ")) {
             String jwtToken = token.substring(7);
             String email = jwtService.extractUsername(jwtToken);
-            Long userId = userAccountService.getUserByEmail(email).get(0).getId();
+            Long userId = userAccountService.getUserByEmail(email).get().getId();
             if (reactionService.expressReaction(postID,userId,dto.getTypeReaction(),dto.getStatus()) > 0)
             {
                 return ResponseEntity.status(HttpStatus.CREATED).body(new CustomSuccessResponse("Bày tỏ cảm xúc thành công","success"));
