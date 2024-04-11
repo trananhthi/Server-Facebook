@@ -33,4 +33,7 @@ public class ChatRoom {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Column(name = "last_message_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastMessageTime;
 }

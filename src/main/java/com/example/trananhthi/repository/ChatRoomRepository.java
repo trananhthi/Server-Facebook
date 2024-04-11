@@ -1,6 +1,8 @@
 package com.example.trananhthi.repository;
 
 import com.example.trananhthi.entity.ChatRoom;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
-    List<ChatRoom> findChatRoomByUserId1OrUserId2OrderByCreatedAtDesc(Long userId1, Long userId2);
+    Page<ChatRoom> findChatRoomByUserId1OrUserId2(Long userId1, Long userId2, Pageable pageable);
     @Query("SELECT c FROM ChatRoom c WHERE (:userId1 = c.userId1 AND :userId2 = c.userId2) OR (:userId1 = c.userId2 AND :userId2 = c.userId1)")
     Optional<ChatRoom> findChatRoomByUserId1AndUserId2(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 }

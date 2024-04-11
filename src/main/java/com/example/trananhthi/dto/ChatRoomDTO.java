@@ -1,5 +1,6 @@
 package com.example.trananhthi.dto;
 
+import com.example.trananhthi.entity.ChatMessage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,6 @@ public class ChatRoomDTO {
     private String status;
     private Date createdAt;
     private UserAccountDTO receiver = null;
+    private Date lastMessageTime;
+    private ChatMessage lastMessage;
 }

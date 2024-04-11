@@ -48,20 +48,16 @@ public class ChatController {
     public void processMessage(@Payload ChatMessage chatMessage) {
         ChatMessage savedMsg = chatMessageService.save(chatMessage);
         ChatRoom chatRoom = chatRoomService.getChatRoomById(chatMessage.getRoomId());
-        if(chatMessage.getSenderId().equals(chatRoom.getUserId1()))
-        {
-            simpMessagingTemplate.convertAndSendToUser(chatRoom.getUserId2().toString(),"/queue/messages" , savedMsg );
-
-        }
-        else {
-            simpMessagingTemplate.convertAndSendToUser(chatRoom.getUserId1().toString(),"/queue/messages" , savedMsg );
-
-        }
+        chatRoomService.updateLastMessageTime(chatMessage.getRoomId(), chatMessage.getCreatedAt());
+        simpMessagingTemplate.convertAndSendToUser(chatRoom.getUserId2().toString(),"/queue/messages" , savedMsg );
+        simpMessagingTemplate.convertAndSendToUser(chatRoom.getUserId1().toString(),"/queue/messages" , savedMsg );
     }
 
     @GetMapping("/v1/chat/list-chat-room/{userId}")
     public ResponseEntity<Page<ChatRoomDTO>> getChatRoom(@PathVariable Long userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")  int size) {
-        List<ChatRoom> chatRoomList = chatRoomService.getChatRoomByUserId(userId);
+        Pageable pageable = PageRequest.of(page,size,Sort.by("lastMessageTime").descending());
+
+        Page<ChatRoom> chatRoomList = chatRoomService.getChatRoomByUserId(userId,pageable);
 
         // Lấy tất cả userId cần lấy thông tin từ phòng chat
         Set<Long> userIdsToFetch = chatRoomList.stream()
@@ -69,7 +65,6 @@ public class ChatController {
                 .collect(Collectors.toSet());
 
         // Lấy thông tin của tất cả người dùng liên quan trong một truy vấn
-        Pageable pageable = PageRequest.of(page,size);
         Map<Long, UserAccount> userMap = userAccountService.getUsersByIds(userIdsToFetch);
 
         // Tạo danh sách ChatRoomDTO từ danh sách ChatRoom
@@ -81,6 +76,7 @@ public class ChatController {
                     if (receiver != null) {
                         chatRoomDTO.setReceiver(mapEntityToDTO.mapUserAccountToDTO(receiver));
                     }
+                    chatRoomDTO.setLastMessage(chatMessageService.getLastMessage(chatRoom.getId()));
                     return chatRoomDTO;
                 })
                 .collect(Collectors.toList());
