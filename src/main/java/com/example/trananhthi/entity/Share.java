@@ -1,28 +1,35 @@
 package com.example.trananhthi.entity;
 
+import com.example.trananhthi.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.io.Serial;
 import java.util.Date;
 
 @Entity
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "shares")
-@Data
-public class Share {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Getter
+@Setter
+public class Share extends BaseEntity {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @ManyToOne
     @JoinColumn(name = "post_id",referencedColumnName = "id")
     private UserPost userPost;
+
     @ManyToOne
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private UserAccount userAccount;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
     private String status;
 }

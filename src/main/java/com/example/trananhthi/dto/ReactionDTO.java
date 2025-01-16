@@ -6,19 +6,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(value = {"status"})
-public class ReactionDTO {
-    private Long id;
-    private Long postId;
+public class ReactionDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private String id;
+    private String postId;
     private UserAccountDTO userAccount;
     private String typeReaction;
     private Date createdAt;
 
-    public  ReactionDTO(Long id, Long postId, UserAccount userAccount, String typeReaction, Date createdAt)
+    public  ReactionDTO(String id, String postId, UserAccount userAccount, String typeReaction, Date createdAt)
     {
         MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
         this.id = id;

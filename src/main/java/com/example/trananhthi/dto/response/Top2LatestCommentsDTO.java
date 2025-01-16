@@ -1,5 +1,6 @@
-package com.example.trananhthi.dto;
+package com.example.trananhthi.dto.response;
 
+import com.example.trananhthi.dto.CommentDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

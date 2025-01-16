@@ -1,4 +1,4 @@
-package com.example.trananhthi.dto;
+package com.example.trananhthi.dto.request;
 
 import com.example.trananhthi.entity.UserPost;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import lombok.Setter;
 public class CreatePostDTO {
     private String content;
     private String typePost;
-    private String video;
     private UserPost parentPost;
     private String privacy;
     private String tag;

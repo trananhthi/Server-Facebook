@@ -1,7 +1,8 @@
 package com.example.trananhthi.controller;
 
+import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.common.MapEntityToDTO;
-import com.example.trananhthi.dto.UpdatePrivacyDefaultDTO;
+import com.example.trananhthi.dto.request.UpdatePrivacyDefaultDTO;
 import com.example.trananhthi.dto.UserAccountDTO;
 import com.example.trananhthi.entity.UserAccount;
 import com.example.trananhthi.service.JwtService;
@@ -16,14 +17,14 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/v1/user")
 @RequiredArgsConstructor
-public class UserAccountController {
+public class UserAccountController extends BaseController {
     private final UserAccountService userAccountService;
     private final JwtService jwtService;
     private final MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
+    private static final String ROOT = "/user";
 
-    @GetMapping("/infor")
+    @GetMapping(V1 + ROOT + "/infor")
     public ResponseEntity<UserAccountDTO> getUserInfor(@RequestHeader(name = "Authorization") String token)
     {
         try {
@@ -39,7 +40,7 @@ public class UserAccountController {
         }
     }
 
-    @PatchMapping("/update/privacy-default")
+    @PatchMapping(V1 + ROOT + "/update/privacy-default")
     public  ResponseEntity<UserAccountDTO> updatePrivacyDefaultByEmail(@RequestHeader(name = "Authorization") String token,@RequestBody UpdatePrivacyDefaultDTO dto)
     {
         if (token != null && token.startsWith("Bearer ")) {
@@ -51,7 +52,7 @@ public class UserAccountController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
-    @GetMapping("/search")
+    @GetMapping(V1 + ROOT + "/search")
     public  ResponseEntity<List<UserAccountDTO>> searchByName(@RequestParam String keyword)
     {
         List<UserAccount> userAccountList = userAccountService.searchUsersByName(keyword);

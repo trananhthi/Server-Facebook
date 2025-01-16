@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ChatRoomRepository extends CrudRepository<ChatRoom, Long> {
-    Page<ChatRoom> findChatRoomByUserId1OrUserId2(Long userId1, Long userId2, Pageable pageable);
+public interface ChatRoomRepository extends CrudRepository<ChatRoom, String> {
+    Page<ChatRoom> findChatRoomByUserId1OrUserId2(String userId1, String userId2, Pageable pageable);
     @Query("SELECT c FROM ChatRoom c WHERE (:userId1 = c.userId1 AND :userId2 = c.userId2) OR (:userId1 = c.userId2 AND :userId2 = c.userId1)")
-    Optional<ChatRoom> findChatRoomByUserId1AndUserId2(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
+    Optional<ChatRoom> findChatRoomByUserId1AndUserId2(@Param("userId1") String userId1, @Param("userId2") String userId2);
 }

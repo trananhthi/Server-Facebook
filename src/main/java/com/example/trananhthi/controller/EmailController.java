@@ -1,25 +1,22 @@
 package com.example.trananhthi.controller;
 
+import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.service.MyEmailService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @RestController
-@RequestMapping("/v1/email")
-public class EmailController {
+@RequiredArgsConstructor
+public class EmailController extends BaseController {
     private final MyEmailService myEmailService;
-    @Autowired
-    public EmailController(MyEmailService myEmailService) {
-        this.myEmailService = myEmailService;
-    }
+    private static final String ROOT = "/email";
 
     public String readEmailTemplate() {
         Resource resource = new ClassPathResource("static/emailTemplate.html");
@@ -33,7 +30,7 @@ public class EmailController {
         }
     }
 
-    @GetMapping("/send")
+    @GetMapping(V1 + ROOT + "/send")
     public String sendEmailTest()
     {
         String htmlContent = readEmailTemplate();

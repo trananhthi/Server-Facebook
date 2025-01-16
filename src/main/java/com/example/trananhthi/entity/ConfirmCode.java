@@ -1,17 +1,21 @@
 package com.example.trananhthi.entity;
 
+import com.example.trananhthi.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
 import java.time.Instant;
 
 @Entity
 @Table(name = "confirm_code")
-@Data
-public class ConfirmCode {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@Getter
+@Setter
+public class ConfirmCode extends BaseEntity {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @OneToOne
     @JoinColumn(name = "user_account_id",referencedColumnName = "id")
     private UserAccount userAccount;

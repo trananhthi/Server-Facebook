@@ -13,35 +13,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class RefreshTokenService {
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final UserAccountRepository userAccountRepository;
-    @Autowired
-    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserAccountRepository userAccountRepository) {
-        this.refreshTokenRepository = refreshTokenRepository;
-        this.userAccountRepository = userAccountRepository;
-    }
+public interface RefreshTokenService {
+    Optional<RefreshToken> findByToken(String token);
 
-    public Optional<RefreshToken> findByToken(String token) {
-        return refreshTokenRepository.findByToken(token);
-    }
+    RefreshToken createRefreshToken(String email);
 
-    public RefreshToken createRefreshToken(String email) {
-        RefreshToken refreshToken = new RefreshToken();
-        Optional<UserAccount> userAccount = userAccountRepository.findByEmail(email);
-        refreshToken.setUserAccount(userAccount.orElse(null));
-        refreshToken.setExpiryDate(Instant.now().plusMillis(1000*60*60*72));
-        refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken = refreshTokenRepository.save(refreshToken);
-        return refreshToken;
-    }
-
-    public RefreshToken verifyExpiration(RefreshToken token) {
-        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
-            refreshTokenRepository.delete(token);
-            throw new TokenRefreshException("RefreshTokenIsExpired", "Vui lòng đăng nhập lại");
-        }
-
-        return token;
-    }
+    RefreshToken verifyExpiration(RefreshToken token);
 }

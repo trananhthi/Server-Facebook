@@ -2,6 +2,7 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.*;
 import com.example.trananhthi.component.Base64Encoding;
+import com.example.trananhthi.dto.request.*;
 import com.example.trananhthi.entity.ConfirmCode;
 import com.example.trananhthi.entity.RefreshToken;
 import com.example.trananhthi.entity.UserAccount;
@@ -23,7 +24,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -31,8 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/authenticate")
-public class AuthController {
+public class AuthController extends BaseController {
     private final UserAccountService userAccountService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -40,6 +39,8 @@ public class AuthController {
     private final ConfirmCodeService confirmCodeService;
     private final MyEmailService myEmailService;
     private final Environment env;
+
+    private static final String ROOT = "/authenticate";
 
     @Autowired
     public AuthController(UserAccountService userAccountService, JwtService jwtService, AuthenticationManager authenticationManager, RefreshTokenService refreshTokenService, ConfirmCodeService confirmCodeService, MyEmailService myEmailService, Environment env) {
@@ -52,12 +53,12 @@ public class AuthController {
         this.env = env;
     }
 
-    @PostMapping("/signup")
+    @PostMapping(V1 + ROOT+ "/signup")
     public ResponseEntity<CustomSuccessResponse> signUpNewAccount(@RequestBody UserAccount userAccount)
     {
         ResponseEntity<CustomSuccessResponse> response = null;
         UserAccount newAccount = userAccountService.signUpNewAccount(userAccount);
-        if(newAccount.getId() > 0)
+        if(newAccount != null)
         {
             String key = Base64Encoding.encodeStringToBase64(userAccount.getEmail());
             sendConfirmCodeEmail(userAccount);
@@ -67,7 +68,7 @@ public class AuthController {
         return  response;
     }
 
-    @PostMapping("/signin")
+    @PostMapping(V1 + ROOT + "/signin")
     public ResponseEntity<SignUpResponse> signIn(@RequestBody SignUpRequest signUpRequest)
     {
         if(signUpRequest.getEmail().isEmpty() || signUpRequest.getPassword().isEmpty())
@@ -89,7 +90,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/refreshtoken")
+    @PostMapping(V1 + ROOT + "/refreshtoken")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest tokenRefreshRequest)
     {
         String refreshToken = tokenRefreshRequest.getRefreshToken();
@@ -106,7 +107,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/confirm")
+    @PostMapping(V1 + ROOT + "/confirm")
     public ResponseEntity<CustomSuccessResponse> confirmSignUpAccount(@RequestBody ConfirmCodeRequest confirmCodeRequest)
     {
         Optional<ConfirmCode> confirmCode = confirmCodeService.findByCode(confirmCodeRequest.getCode());
@@ -135,7 +136,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/resend")
+    @PostMapping(V1 + ROOT + "/resend")
     public ResponseEntity<CustomSuccessResponse> resendConfirmCode(@Param("email") String email)
     {
         String emailRequest = Base64Encoding.decodeBase64ToString(email);

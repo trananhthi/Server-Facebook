@@ -1,21 +1,23 @@
 package com.example.trananhthi.entity;
 
 import jakarta.persistence.Id;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 
 @Document(collection = "chat_message")
-@Data
+@Getter
+@Setter
 public class ChatMessage {
     @Id
     private String id;
     @Field("room_id")
-    private Long roomId;
+    private String roomId;
     @Field("sender_id")
-    private Long senderId;
+    private String senderId;
     @Field("content")
     private String content;
     @Field("status")

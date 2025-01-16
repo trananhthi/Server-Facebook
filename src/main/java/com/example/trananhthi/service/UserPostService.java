@@ -1,7 +1,7 @@
 package com.example.trananhthi.service;
 
 import com.example.trananhthi.common.MapEntityToDTO;
-import com.example.trananhthi.dto.CreatePostDTO;
+import com.example.trananhthi.dto.request.CreatePostDTO;
 import com.example.trananhthi.dto.RestPage;
 import com.example.trananhthi.dto.UserPostDTO;
 import com.example.trananhthi.entity.UserPost;
@@ -19,60 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-@EnableCaching
-public class UserPostService {
-    private final UserPostRepository userPostRepository;
-    private final MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
-    private final PostImageService postImageService;
+public interface UserPostService {
+    UserPost createNewPost(UserPost userPost);
 
-    public UserPost createNewPost(UserPost userPost)
-    {
-        return userPostRepository.save(userPost);
-    }
+    RestPage<UserPostDTO> getAllPost(Pageable pageable);
 
-    @Transactional
-    @Cacheable("allPost")
-    public RestPage<UserPostDTO> getAllPost(Pageable pageable)
-    {
-        Page<UserPost> userPostList = userPostRepository.findAllByOrderByCreatedAtDesc(pageable);
-        Page<UserPostDTO> userPostDTOList = userPostList.map(userPost -> {
-            UserPostDTO userPostDTO = mapEntityToDTO.mapUserPostToDTO(userPost);
-            userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(), "actived"));
-            return userPostDTO;
-        });
-        return new RestPage<>(userPostDTOList);
-//        return new RestPage<>(userPostRepository.findAllByOrderByCreatedAtDesc(pageable));
-    }
+    List<UserPost> getAllUserPostsByAuthorId(String authorId);
 
-    public List<UserPost> getAllUserPostsByAuthorId(Long authorId) {
-        return userPostRepository.findAllByAuthor_Id(authorId);
-    }
+    UserPost getUserPostByID(String id);
 
-    public UserPost getUserPostByID(Long id){
-        Optional<UserPost> userPost = userPostRepository.findById(id);
-        if(userPost.isPresent()){
-            return userPost.get();
-        }
-        else{
-            throw new CustomException(HttpStatus.BAD_REQUEST.value(), "PostIsInexist","Bài đăng không tồn tại");
-        }
-    }
-
-    public UserPost updateUserPostByID(Long id,String email, CreatePostDTO dto)
-    {
-        UserPost userPost = getUserPostByID(id);
-        if(userPost.getAuthor().getEmail().equals(email))
-        {
-            userPost.setContent(dto.getContent());
-            userPost.setTypePost(dto.getTypePost());
-            userPost.setPrivacy(dto.getPrivacy());
-            return userPostRepository.save(userPost);
-        }
-        else{
-            throw new CustomException(HttpStatus.BAD_REQUEST.value(),"YouAreNotAllowed","Bạn không được phép chỉnh sửa bài viết này");
-        }
-
-    }
+    UserPost updateUserPostByID(String id,String email, CreatePostDTO dto);
 }

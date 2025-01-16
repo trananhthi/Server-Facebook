@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PostImageRepository extends CrudRepository<PostImage,Long> {
+public interface PostImageRepository extends CrudRepository<PostImage,String> {
     @Query("SELECT new com.example.trananhthi.dto.PostImageDTO(p.id, p.url) " +
             "FROM PostImage p WHERE p.userPost.id = :postId and p.status = :status")
-    List<PostImageDTO> findAllImageByPostId(@Param("postId") Long postId, @Param("status") String status);
+    List<PostImageDTO> findAllImageByPostId(@Param("postId") String postId, @Param("status") String status);
 
-    Optional<PostImage> findByIdAndStatus(Long id,String status);
+    Optional<PostImage> findByIdAndStatus(String id,String status);
 }

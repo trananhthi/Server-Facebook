@@ -18,7 +18,7 @@ public class HomeController {
     }
 
     @GetMapping("/id/{id}")
-    public Optional<UserAccount> getUserByEmail(@PathVariable Long id) {
+    public Optional<UserAccount> getUserByEmail(@PathVariable String id) {
         return UserAccountService.getUserById(id);
     }
 }

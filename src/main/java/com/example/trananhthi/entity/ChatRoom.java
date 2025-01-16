@@ -1,38 +1,43 @@
 package com.example.trananhthi.entity;
 
+import com.example.trananhthi.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.io.Serial;
 import java.util.Date;
 
 @Entity
 @Table(name = "chat_room")
 @DynamicInsert
 @DynamicUpdate
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoom {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Getter
+@Setter
+public class ChatRoom extends BaseEntity {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @Column(name = "user1_id")
-    private Long userId1;
+    private String userId1;
+
     @Column(name = "user2_id")
-    private Long userId2;
+    private String userId2;
+
     @Column(name = "room_name")
     private String roomName;
+
     @Column(name = "status")
     private String status;
+
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
     @Column(name = "last_message_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastMessageTime;

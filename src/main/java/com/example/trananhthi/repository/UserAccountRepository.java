@@ -14,12 +14,12 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface UserAccountRepository extends CrudRepository<UserAccount,Long> {
+public interface UserAccountRepository extends CrudRepository<UserAccount,String> {
     Optional<UserAccount> findByEmail(String email);
     List<UserAccount> findByNameContaining(String name);
     @Query("SELECT ua FROM UserAccount ua WHERE ua.id IN :userIds")
-    List<UserAccount> findAllByIdIn(Set<Long> userIds);
-    Optional<UserAccount> findById(Long id);
+    List<UserAccount> findAllByIdIn(Set<String> userIds);
+    Optional<UserAccount> findById(String id);
     @Modifying
     void deleteUserAccountsByStatusAndTimeCreatedBefore(String status, Date timeCreated);
     @Modifying

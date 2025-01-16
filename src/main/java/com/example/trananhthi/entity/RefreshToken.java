@@ -1,16 +1,19 @@
 package com.example.trananhthi.entity;
 
+import com.example.trananhthi.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
 import java.time.Instant;
 
 @Entity(name = "refresh_token")
-@Data
-public class RefreshToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@Getter
+@Setter
+public class RefreshToken extends BaseEntity {
+    @Serial
+    private static final long serialVersionUID = 1L;
     @OneToOne
     @JoinColumn(name = "user_account_id",referencedColumnName = "id")
     private UserAccount userAccount;

@@ -1,7 +1,7 @@
 package com.example.trananhthi.common;
 
 import com.example.trananhthi.dto.ChatRoomDTO;
-import com.example.trananhthi.dto.CreatePostDTO;
+import com.example.trananhthi.dto.request.CreatePostDTO;
 import com.example.trananhthi.dto.UserAccountDTO;
 import com.example.trananhthi.dto.UserPostDTO;
 import com.example.trananhthi.entity.ChatRoom;

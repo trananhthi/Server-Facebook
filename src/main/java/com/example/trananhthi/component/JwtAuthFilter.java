@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserAccountService userAccountService;
     private final RequestMatcher uriMatcher = new OrRequestMatcher(
-            new AntPathRequestMatcher("/v1/authenticate/**"),
+            new AntPathRequestMatcher("/api/v1/authenticate/**"),
             new AntPathRequestMatcher("/ws/**")
     );
 
@@ -40,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
             String authHeader = request.getHeader("Authorization");
             String token;
             String email;
@@ -85,7 +86,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         RequestMatcher matcher = new NegatedRequestMatcher(uriMatcher);
         return !matcher.matches(request);
     }

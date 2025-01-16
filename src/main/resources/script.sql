@@ -5,7 +5,7 @@ DROP TABLE `facebook`.`user_accounts`;
 
 create table user_accounts
 (
-    id         bigint auto_increment primary key,
+    id         varchar(100) primary key,
     email      varchar(50)                                                                  not null,
     password   varchar(500)                                                                  not null,
     last_name  varchar(50)                                                                  not null default 'User',

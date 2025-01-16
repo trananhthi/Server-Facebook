@@ -1,28 +1,24 @@
 package com.example.trananhthi.controller;
 
-import com.example.trananhthi.common.CustomSuccessResponse;
+import com.example.trananhthi.common.BaseController;
+import com.example.trananhthi.dto.request.CustomSuccessResponse;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.service.PostImageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/post-image")
-public class PostImageController {
+@RequiredArgsConstructor
+public class PostImageController extends BaseController {
     private final PostImageService postImageService;
+    private static final String ROOT = "/post-image";
 
-    @Autowired
-    public PostImageController(PostImageService postImageService) {
-        this.postImageService = postImageService;
-    }
-
-    @PatchMapping("/delete/{imageID}")
-    public ResponseEntity<?> deleteImage (@PathVariable Long imageID)
+    @PatchMapping(V1 + ROOT + "/delete/{imageID}")
+    public ResponseEntity<?> deleteImage (@PathVariable String imageID)
     {
         if(postImageService.deleteImage(imageID))
         {

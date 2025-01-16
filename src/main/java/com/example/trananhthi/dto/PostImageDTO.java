@@ -5,15 +5,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Getter
 @Setter
 @JsonIgnoreProperties(value = {"status","createdAt"})
 @NoArgsConstructor
-public class PostImageDTO {
-    private Long id;
+public class PostImageDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private String id;
     private String url;
 
-    public PostImageDTO(Long id, String url) {
+    public PostImageDTO(String id, String url) {
         this.id = id;
         this.url = url;
     }

@@ -1,8 +1,9 @@
 package com.example.trananhthi.controller;
 
-import com.example.trananhthi.common.CustomSuccessResponse;
+import com.example.trananhthi.common.BaseController;
+import com.example.trananhthi.dto.request.CustomSuccessResponse;
 import com.example.trananhthi.common.MapEntityToDTO;
-import com.example.trananhthi.dto.CreatePostDTO;
+import com.example.trananhthi.dto.request.CreatePostDTO;
 import com.example.trananhthi.dto.UserPostDTO;
 import com.example.trananhthi.entity.PostImage;
 import com.example.trananhthi.entity.UserAccount;
@@ -24,17 +25,17 @@ import java.util.Objects;
 
 
 @RestController
-@RequestMapping("/v1/post")
 @RequiredArgsConstructor
-public class UserPostController {
+public class UserPostController extends BaseController {
     private final UserPostService userPostService;
     private final UserAccountService userAccountService;
     private final JwtService jwtService;
     private final S3Service s3Service;
     private final PostImageService postImageService;
     private final MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
+    private static final String ROOT = "/post";
 
-    @PostMapping("/create")
+    @PostMapping(V1 + ROOT + "/create")
     public ResponseEntity<?> createPost(@RequestHeader(name = "Authorization") String token,@ModelAttribute CreatePostDTO dto,@RequestBody List<MultipartFile> files ) throws IOException {
         if (token != null && token.startsWith("Bearer ")) {
             String jwtToken = token.substring(7);
@@ -43,7 +44,7 @@ public class UserPostController {
             UserPost newUserPost = mapEntityToDTO.mapCreatePostDTOToEntity(dto);
             newUserPost.setAuthor(userAccount);
             UserPost newPost = userPostService.createNewPost(newUserPost);
-            if (newPost.getId() > 0)
+            if (newPost != null)
             {
                 if(newPost.getTypePost().equals("image"))
                 {
@@ -63,7 +64,7 @@ public class UserPostController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
-    @GetMapping("/get")
+    @GetMapping(V1 + ROOT + "/get")
     public ResponseEntity<Page<UserPostDTO>> getAllPost(@RequestParam(defaultValue = "-1") int page, @RequestParam(defaultValue = "0")  int size)
     {
         Pageable pageable;
@@ -78,13 +79,13 @@ public class UserPostController {
         return ResponseEntity.ok().body(userPostDTOList);
     }
 
-    @PatchMapping("/update/{postID}")
-    public ResponseEntity<?> updatePost(@RequestHeader(name = "Authorization") String token,@PathVariable Long postID,@ModelAttribute CreatePostDTO dto,@RequestBody List<MultipartFile> files) throws IOException {
+    @PatchMapping(V1 + ROOT + "/update/{postID}")
+    public ResponseEntity<?> updatePost(@RequestHeader(name = "Authorization") String token,@PathVariable String postID,@ModelAttribute CreatePostDTO dto,@RequestBody List<MultipartFile> files) throws IOException {
         if (token != null && token.startsWith("Bearer ")) {
             String jwtToken = token.substring(7);
             String email = jwtService.extractUsername(jwtToken);
             UserPost updatedUserPost = userPostService.updateUserPostByID(postID,email,dto);
-            if (updatedUserPost.getId()>0)
+            if (updatedUserPost != null)
             {
                 if(!Objects.isNull(files))
                 {

@@ -5,14 +5,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @JsonIgnoreProperties(value = {"priority","status"})
-public class UserPostDTO {
-    private Long id;
+public class UserPostDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    private String id;
     private UserAccountDTO author;
     private String content;
     private Date createdAt;

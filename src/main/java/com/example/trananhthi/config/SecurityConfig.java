@@ -1,9 +1,8 @@
 package com.example.trananhthi.config;
 
 import com.example.trananhthi.component.JwtAuthFilter;
-import com.example.trananhthi.repository.UserAccountRepository;
-import com.example.trananhthi.service.UserAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.trananhthi.service.impl.UserAccountServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,15 +26,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserAccountRepository userAccountRepository;
     private final JwtAuthFilter authFilter;
-
-    @Autowired
-    public SecurityConfig(UserAccountRepository userAccountRepository, JwtAuthFilter authFilter) {
-        this.userAccountRepository = userAccountRepository;
-        this.authFilter = authFilter;
-    }
+    private final UserAccountServiceImpl userAccountServiceImpl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,8 +37,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((authorize)->authorize
-                        .requestMatchers("/v1/authenticate/**").permitAll()
-                        .requestMatchers("/v1/email/**").permitAll()
+                        .requestMatchers("/api/v1/authenticate/**").permitAll()
+                        .requestMatchers("/api/v1/email/**").permitAll()
                         .requestMatchers("/ws").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -73,7 +67,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(new UserAccountService(userAccountRepository,passwordEncoder()));
+        authenticationProvider.setUserDetailsService(userAccountServiceImpl);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
