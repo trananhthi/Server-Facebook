@@ -1,7 +1,7 @@
 package com.example.trananhthi.service.impl;
 
 import com.example.trananhthi.common.BaseServiceImpl;
-import com.example.trananhthi.dto.ReactionDTO;
+import com.example.trananhthi.dto.ReactionDto;
 import com.example.trananhthi.entity.Reaction;
 import com.example.trananhthi.repository.ReactionRepository;
 import com.example.trananhthi.service.ReactionService;
@@ -23,7 +23,7 @@ public class ReactionServiceImpl extends BaseServiceImpl<Reaction, ReactionRepos
     }
 
     @Override
-    public List<ReactionDTO> getAllReactionByUserPostID(String userPostID, String status)
+    public List<ReactionDto> getAllReactionByUserPostID(String userPostID, String status)
     {
         return reactionRepository.findReactionsByPostId(userPostID,status);
     }

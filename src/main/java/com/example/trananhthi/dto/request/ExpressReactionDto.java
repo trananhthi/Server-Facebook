@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateCommentDTO {
-    private String content;
+public class ExpressReactionDto {
+    private String typeReaction;
+    private String status;
 }

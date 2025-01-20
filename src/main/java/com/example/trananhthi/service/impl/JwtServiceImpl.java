@@ -20,8 +20,10 @@ public class JwtServiceImpl implements JwtService {
     private static final String JWT_SECRET = "TranAnhThiFacebookClone1234567891011121314151617181920";
 
     @Override
-    public String generateToken(String email) {
+    public String generateToken(String email, String id, String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id", id);
+        claims.put("role", role);
         return createToken(claims, email);
     }
 

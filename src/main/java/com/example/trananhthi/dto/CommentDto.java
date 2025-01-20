@@ -13,18 +13,18 @@ import java.util.Date;
 @Getter
 @Setter
 @JsonIgnoreProperties(value = {"status"})
-public class CommentDTO implements Serializable {
+public class CommentDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private String id;
     private String postId;
-    private UserAccountDTO userAccount;
+    private UserAccountDto userAccount;
     private String content;
     private Date createdAt;
     private Date updatedAt;
 
-    public  CommentDTO(String id, String postId, UserAccount userAccount, String content, Date createdAt, Date updatedAt)
+    public CommentDto(String id, String postId, UserAccount userAccount, String content, Date createdAt, Date updatedAt)
     {
         MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
 

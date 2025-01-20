@@ -1,7 +1,7 @@
 package com.example.trananhthi.service.impl;
 
 import com.example.trananhthi.common.BaseServiceImpl;
-import com.example.trananhthi.dto.CommentDTO;
+import com.example.trananhthi.dto.CommentDto;
 import com.example.trananhthi.entity.Comment;
 import com.example.trananhthi.repository.CommentRepository;
 import com.example.trananhthi.service.CommentService;
@@ -24,15 +24,15 @@ public class CommentServiceImpl extends BaseServiceImpl<Comment, CommentReposito
     }
 
     @Override
-    public Page<CommentDTO> getAllCommentByUserPostID(String userPostID, String status, Pageable pageable)
+    public Page<CommentDto> getAllCommentByUserPostID(String userPostID, String status, Pageable pageable)
     {
         return commentRepository.findCommentsByPostId(userPostID,status,pageable);
     }
 
     @Override
-    public List<CommentDTO> getTop2LatestComments(String userPostID, String status)
+    public List<CommentDto> getTop2LatestComments(String userPostID, String status)
     {
-        List<CommentDTO> commentList = commentRepository.findTop2CommentsByCreatedAt(userPostID,status);
+        List<CommentDto> commentList = commentRepository.findTop2CommentsByCreatedAt(userPostID,status);
         if (commentList.size() > 2) {
             return commentList.subList(0, 2);
         } else {

@@ -19,12 +19,11 @@ import java.util.Objects;
 public class S3ServiceImpl implements S3Service {
     private final AmazonS3 amazonS3;
     private final Environment env;
-    private final Utils utils;
 
     @Override
     public String uploadImageToS3(String bucketName, MultipartFile image) throws IOException {
         String imageUrl;
-        String fileName = utils.generateFileName(image);
+        String fileName = Utils.generateFileName(image);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(image.getSize());
         metadata.setContentType(image.getContentType());

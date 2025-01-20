@@ -1,6 +1,6 @@
 package com.example.trananhthi.repository;
 
-import com.example.trananhthi.dto.ReactionDTO;
+import com.example.trananhthi.dto.ReactionDto;
 import com.example.trananhthi.entity.Reaction;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,9 +13,9 @@ import java.util.List;
 
 @Repository
 public interface ReactionRepository extends CrudRepository<Reaction,String> {
-    @Query("SELECT new com.example.trananhthi.dto.ReactionDTO(r.id, r.userPost.id,r.userAccount,r.typeReaction, r.createdAt) " +
+    @Query("SELECT new com.example.trananhthi.dto.ReactionDto(r.id, r.userPost.id,r.userAccount,r.typeReaction, r.createdAt) " +
             "FROM Reaction r WHERE r.userPost.id = :postId and r.status = :status")
-    List<ReactionDTO> findReactionsByPostId(@Param("postId") String postId,@Param("status") String status);
+    List<ReactionDto> findReactionsByPostId(@Param("postId") String postId, @Param("status") String status);
 
     @Modifying
     @Transactional

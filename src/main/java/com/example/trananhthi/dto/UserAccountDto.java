@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @JsonIgnoreProperties(value = {"password","role","status","timeUpdated","loginAttempts","name"})
-public class UserAccountDTO implements Serializable {
+public class UserAccountDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 

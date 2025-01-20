@@ -2,8 +2,8 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.common.MapEntityToDTO;
-import com.example.trananhthi.dto.request.UpdatePrivacyDefaultDTO;
-import com.example.trananhthi.dto.UserAccountDTO;
+import com.example.trananhthi.dto.request.UpdatePrivacyDefaultDto;
+import com.example.trananhthi.dto.UserAccountDto;
 import com.example.trananhthi.entity.UserAccount;
 import com.example.trananhthi.service.JwtService;
 import com.example.trananhthi.service.UserAccountService;
@@ -25,7 +25,7 @@ public class UserAccountController extends BaseController {
     private static final String ROOT = "/user";
 
     @GetMapping(V1 + ROOT + "/infor")
-    public ResponseEntity<UserAccountDTO> getUserInfor(@RequestHeader(name = "Authorization") String token)
+    public ResponseEntity<UserAccountDto> getUserInfor(@RequestHeader(name = "Authorization") String token)
     {
         try {
             if (token != null && token.startsWith("Bearer ")) {
@@ -41,7 +41,7 @@ public class UserAccountController extends BaseController {
     }
 
     @PatchMapping(V1 + ROOT + "/update/privacy-default")
-    public  ResponseEntity<UserAccountDTO> updatePrivacyDefaultByEmail(@RequestHeader(name = "Authorization") String token,@RequestBody UpdatePrivacyDefaultDTO dto)
+    public  ResponseEntity<UserAccountDto> updatePrivacyDefaultByEmail(@RequestHeader(name = "Authorization") String token, @RequestBody UpdatePrivacyDefaultDto dto)
     {
         if (token != null && token.startsWith("Bearer ")) {
             String jwtToken = token.substring(7);
@@ -53,7 +53,7 @@ public class UserAccountController extends BaseController {
     }
 
     @GetMapping(V1 + ROOT + "/search")
-    public  ResponseEntity<List<UserAccountDTO>> searchByName(@RequestParam String keyword)
+    public  ResponseEntity<List<UserAccountDto>> searchByName(@RequestParam String keyword)
     {
         List<UserAccount> userAccountList = userAccountService.searchUsersByName(keyword);
         return ResponseEntity.ok(mapEntityToDTO.mapUserAccountListToDTOList(userAccountList));

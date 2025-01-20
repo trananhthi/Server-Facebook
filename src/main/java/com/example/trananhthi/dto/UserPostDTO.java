@@ -18,12 +18,12 @@ public class UserPostDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private UserAccountDTO author;
+    private UserAccountDto author;
     private String content;
     private Date createdAt;
     private Date updatedAt;
     private String typePost;
-    private List<PostImageDTO> image;
+    private List<PostImageDto> image;
     private UserPost parentPost;
     private Integer view;
     private String privacy;

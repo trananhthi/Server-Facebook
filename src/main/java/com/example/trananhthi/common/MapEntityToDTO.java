@@ -1,8 +1,8 @@
 package com.example.trananhthi.common;
 
-import com.example.trananhthi.dto.ChatRoomDTO;
-import com.example.trananhthi.dto.request.CreatePostDTO;
-import com.example.trananhthi.dto.UserAccountDTO;
+import com.example.trananhthi.dto.ChatRoomDto;
+import com.example.trananhthi.dto.request.CreatePostDto;
+import com.example.trananhthi.dto.UserAccountDto;
 import com.example.trananhthi.dto.UserPostDTO;
 import com.example.trananhthi.entity.ChatRoom;
 import com.example.trananhthi.entity.UserAccount;
@@ -24,9 +24,9 @@ public class MapEntityToDTO {
         return instance;
     }
 
-    public UserAccountDTO mapUserAccountToDTO(UserAccount userAccount)
+    public UserAccountDto mapUserAccountToDTO(UserAccount userAccount)
     {
-        return objectMapper.convertValue(userAccount,UserAccountDTO.class);
+        return objectMapper.convertValue(userAccount, UserAccountDto.class);
     }
 
     public UserPostDTO mapUserPostToDTO(UserPost userPost)
@@ -34,18 +34,18 @@ public class MapEntityToDTO {
         return objectMapper.convertValue(userPost,UserPostDTO.class);
     }
 
-    public UserPost mapCreatePostDTOToEntity(CreatePostDTO createPostDTO)
+    public UserPost mapCreatePostDTOToEntity(CreatePostDto createPostDTO)
     {
         return objectMapper.convertValue(createPostDTO,UserPost.class);
     }
 
-    public List<UserAccountDTO> mapUserAccountListToDTOList(List<UserAccount> userAccountList) {
-        JavaType targetType = objectMapper.getTypeFactory().constructCollectionType(List.class, UserAccountDTO.class);
+    public List<UserAccountDto> mapUserAccountListToDTOList(List<UserAccount> userAccountList) {
+        JavaType targetType = objectMapper.getTypeFactory().constructCollectionType(List.class, UserAccountDto.class);
         return objectMapper.convertValue(userAccountList, targetType);
     }
 
-    public ChatRoomDTO mapChatRoomToDTO(ChatRoom chatRoom)
+    public ChatRoomDto mapChatRoomToDTO(ChatRoom chatRoom)
     {
-        return objectMapper.convertValue(chatRoom,ChatRoomDTO.class);
+        return objectMapper.convertValue(chatRoom, ChatRoomDto.class);
     }
 }

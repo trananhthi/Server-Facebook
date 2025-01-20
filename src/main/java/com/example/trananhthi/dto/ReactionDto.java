@@ -13,17 +13,17 @@ import java.util.Date;
 @Getter
 @Setter
 @JsonIgnoreProperties(value = {"status"})
-public class ReactionDTO implements Serializable {
+public class ReactionDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private String id;
     private String postId;
-    private UserAccountDTO userAccount;
+    private UserAccountDto userAccount;
     private String typeReaction;
     private Date createdAt;
 
-    public  ReactionDTO(String id, String postId, UserAccount userAccount, String typeReaction, Date createdAt)
+    public ReactionDto(String id, String postId, UserAccount userAccount, String typeReaction, Date createdAt)
     {
         MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
         this.id = id;

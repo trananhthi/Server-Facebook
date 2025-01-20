@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdatePrivacyDefaultDTO {
-    private String privacyDefault;
+public class CreateCommentDto {
+    private String content;
 }

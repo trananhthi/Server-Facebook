@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Component
 public class Utils {
-    public String generateFileName(MultipartFile multiPart) {
+    public static String generateFileName(MultipartFile multiPart) {
         return new Date().getTime() + "-" + Objects.requireNonNull(multiPart.getOriginalFilename()).replace(" ", "_");
     }
 

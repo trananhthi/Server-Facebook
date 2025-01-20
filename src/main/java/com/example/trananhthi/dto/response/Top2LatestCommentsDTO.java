@@ -1,6 +1,6 @@
 package com.example.trananhthi.dto.response;
 
-import com.example.trananhthi.dto.CommentDTO;
+import com.example.trananhthi.dto.CommentDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +11,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class Top2LatestCommentsDTO {
-    private List<CommentDTO> commentList;
+    private List<CommentDto> commentList;
     private Long total;
 }

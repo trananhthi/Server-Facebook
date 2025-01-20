@@ -4,7 +4,7 @@ import com.example.trananhthi.common.BaseServiceImpl;
 import com.example.trananhthi.common.MapEntityToDTO;
 import com.example.trananhthi.dto.RestPage;
 import com.example.trananhthi.dto.UserPostDTO;
-import com.example.trananhthi.dto.request.CreatePostDTO;
+import com.example.trananhthi.dto.request.CreatePostDto;
 import com.example.trananhthi.entity.UserPost;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.repository.UserPostRepository;
@@ -66,7 +66,7 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
     }
 
     @Override
-    public UserPost updateUserPostByID(String id,String email, CreatePostDTO dto)
+    public UserPost updateUserPostByID(String id,String email, CreatePostDto dto)
     {
         UserPost userPost = getUserPostByID(id);
         if(userPost.getAuthor().getEmail().equals(email))

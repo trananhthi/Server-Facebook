@@ -1,7 +1,7 @@
 package com.example.trananhthi.service.impl;
 
 import com.example.trananhthi.common.BaseServiceImpl;
-import com.example.trananhthi.dto.PostImageDTO;
+import com.example.trananhthi.dto.PostImageDto;
 import com.example.trananhthi.entity.PostImage;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.repository.PostImageRepository;
@@ -27,7 +27,7 @@ public class PostImageServiceImpl extends BaseServiceImpl<PostImage, PostImageRe
     }
 
     @Override
-    public List<PostImageDTO> getAllImageByPostId(String userPostID, String status)
+    public List<PostImageDto> getAllImageByPostId(String userPostID, String status)
     {
         return  postImageRepository.findAllImageByPostId(userPostID,status);
     }

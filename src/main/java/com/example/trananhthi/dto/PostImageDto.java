@@ -12,14 +12,14 @@ import java.io.Serializable;
 @Setter
 @JsonIgnoreProperties(value = {"status","createdAt"})
 @NoArgsConstructor
-public class PostImageDTO implements Serializable {
+public class PostImageDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private String id;
     private String url;
 
-    public PostImageDTO(String id, String url) {
+    public PostImageDto(String id, String url) {
         this.id = id;
         this.url = url;
     }

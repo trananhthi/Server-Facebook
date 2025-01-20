@@ -2,7 +2,7 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.common.MapEntityToDTO;
-import com.example.trananhthi.dto.ChatRoomDTO;
+import com.example.trananhthi.dto.ChatRoomDto;
 import com.example.trananhthi.entity.ChatMessage;
 import com.example.trananhthi.entity.ChatRoom;
 import com.example.trananhthi.entity.UserAccount;
@@ -56,7 +56,7 @@ public class ChatController extends BaseController {
     }
 
     @GetMapping(V1 + ROOT + "/list-chat-room/{userId}")
-    public ResponseEntity<Page<ChatRoomDTO>> getChatRoom(@PathVariable String userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")  int size) {
+    public ResponseEntity<Page<ChatRoomDto>> getChatRoom(@PathVariable String userId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10")  int size) {
         Pageable pageable = PageRequest.of(page,size,Sort.by("lastMessageTime").descending());
 
         Page<ChatRoom> chatRoomList = chatRoomService.getChatRoomByUserId(userId,pageable);
@@ -70,9 +70,9 @@ public class ChatController extends BaseController {
         Map<String, UserAccount> userMap = userAccountService.getUsersByIds(userIdsToFetch);
 
         // Tạo danh sách ChatRoomDTO từ danh sách ChatRoom
-        List<ChatRoomDTO> chatRoomDTOList = chatRoomList.stream()
+        List<ChatRoomDto> chatRoomDtoList = chatRoomList.stream()
                 .map(chatRoom -> {
-                    ChatRoomDTO chatRoomDTO = mapEntityToDTO.mapChatRoomToDTO(chatRoom);
+                    ChatRoomDto chatRoomDTO = mapEntityToDTO.mapChatRoomToDTO(chatRoom);
                     String receiverId = chatRoom.getUserId1().equals(userId) ? chatRoom.getUserId2() : chatRoom.getUserId1();
                     UserAccount receiver = userMap.get(receiverId);
                     if (receiver != null) {
@@ -82,7 +82,7 @@ public class ChatController extends BaseController {
                     return chatRoomDTO;
                 })
                 .collect(Collectors.toList());
-        Page<ChatRoomDTO> chatRoomDTOPage = PagingHelper.listToPage(chatRoomDTOList, pageable);
+        Page<ChatRoomDto> chatRoomDTOPage = PagingHelper.listToPage(chatRoomDtoList, pageable);
 
         return ResponseEntity.ok(chatRoomDTOPage);
     }
@@ -95,13 +95,13 @@ public class ChatController extends BaseController {
     }
 
     @GetMapping(V1 + ROOT + "/chat-room/{userId}/{roomId}")
-    public ResponseEntity<ChatRoomDTO> getChatRoomById(@PathVariable String roomId, @PathVariable String userId) {
+    public ResponseEntity<ChatRoomDto> getChatRoomById(@PathVariable String roomId, @PathVariable String userId) {
         ChatRoom chatRoom = chatRoomService.getChatRoomById(roomId);
 
         if(chatRoom == null) {
             throw new CustomException(HttpStatus.NOT_FOUND.value(), "NotFound", "Chat room not found");
         }
-        ChatRoomDTO chatRoomDTO = mapEntityToDTO.mapChatRoomToDTO(chatRoom);
+        ChatRoomDto chatRoomDTO = mapEntityToDTO.mapChatRoomToDTO(chatRoom);
         String receiverId = chatRoom.getUserId1().equals(userId) ? chatRoom.getUserId2() : chatRoom.getUserId1();
         Optional<UserAccount> receiver = userAccountService.getUserById(receiverId);
         receiver.ifPresent(userAccount -> chatRoomDTO.setReceiver(mapEntityToDTO.mapUserAccountToDTO(userAccount)));

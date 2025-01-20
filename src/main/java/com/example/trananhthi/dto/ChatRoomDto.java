@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class ChatRoomDTO implements Serializable {
+public class ChatRoomDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -20,7 +20,7 @@ public class ChatRoomDTO implements Serializable {
     private String roomName;
     private String status;
     private Date createdAt;
-    private UserAccountDTO receiver = null;
+    private UserAccountDto receiver = null;
     private Date lastMessageTime;
     private ChatMessage lastMessage;
 }

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreatePostDTO {
+public class CreatePostDto {
     private String content;
     private String typePost;
     private UserPost parentPost;

@@ -3,6 +3,7 @@ package com.example.trananhthi.controller;
 import com.example.trananhthi.common.*;
 import com.example.trananhthi.component.Base64Encoding;
 import com.example.trananhthi.dto.request.*;
+import com.example.trananhthi.dto.response.SignInResponse;
 import com.example.trananhthi.entity.ConfirmCode;
 import com.example.trananhthi.entity.RefreshToken;
 import com.example.trananhthi.entity.UserAccount;
@@ -69,24 +70,25 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping(V1 + ROOT + "/signin")
-    public ResponseEntity<SignUpResponse> signIn(@RequestBody SignUpRequest signUpRequest)
+    public ResponseEntity<SignInResponse> signIn(@RequestBody SignInRequest signInRequest)
     {
-        if(signUpRequest.getEmail().isEmpty() || signUpRequest.getPassword().isEmpty())
+        if(signInRequest.getEmail().isEmpty() || signInRequest.getPassword().isEmpty())
         {
             throw new CustomException(HttpStatus.BAD_REQUEST.value(),"LackOfEmailOrPassword","Thiếu Email hoặc mật khẩu");
         }
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signUpRequest.getEmail(), signUpRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
         Object principal = authentication.getPrincipal();
         Optional<UserAccount> userAccount = userAccountService.getUserByEmail(((UserDetails) principal).getUsername());
+
         if(userAccount.isPresent() && userAccount.get().getStatus().equals("not_activated"))
         {
-            return ResponseEntity.status(HttpStatus.OK).body(new SignUpResponse("","","Tài khoản chưa xác thực email", Base64Encoding.encodeStringToBase64(signUpRequest.getEmail())));
+            return ResponseEntity.status(HttpStatus.OK).body(new SignInResponse("","","Tài khoản chưa xác thực email", Base64Encoding.encodeStringToBase64(signInRequest.getEmail())));
         }
-        else if (authentication.isAuthenticated()) {
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken(signUpRequest.getEmail());
-            return ResponseEntity.status(HttpStatus.OK).body(new SignUpResponse(jwtService.generateToken(signUpRequest.getEmail()),refreshToken.getToken())) ;
+        if (userAccount.isPresent() && authentication.isAuthenticated()) {
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(signInRequest.getEmail());
+            return ResponseEntity.status(HttpStatus.OK).body(new SignInResponse(jwtService.generateToken(signInRequest.getEmail(),userAccount.get().getId(), userAccount.get().getRole()),refreshToken.getToken())) ;
         } else {
-            throw new UsernameNotFoundException("invalid user with email = " + signUpRequest.getEmail() + " request !");
+            throw new UsernameNotFoundException("invalid user with email = " + signInRequest.getEmail() + " request !");
         }
     }
 
@@ -98,8 +100,8 @@ public class AuthController extends BaseController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUserAccount)
                 .map(userAccount -> {
-                    String token = jwtService.generateToken(userAccount.getEmail());
-                    return ResponseEntity.ok().body(new SignUpResponse(token,refreshToken));
+                    String token = jwtService.generateToken(userAccount.getEmail(),userAccount.getId(),userAccount.getRole());
+                    return ResponseEntity.ok().body(new SignInResponse(token,refreshToken));
                 })
                 .orElseThrow(()->
                     new TokenRefreshException("RefreshTokenIsInexist","Refresh token không tồn tại")

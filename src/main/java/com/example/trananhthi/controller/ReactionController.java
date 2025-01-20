@@ -2,8 +2,8 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.dto.request.CustomSuccessResponse;
-import com.example.trananhthi.dto.request.ExpressReactionDTO;
-import com.example.trananhthi.dto.ReactionDTO;
+import com.example.trananhthi.dto.request.ExpressReactionDto;
+import com.example.trananhthi.dto.ReactionDto;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.service.JwtService;
 import com.example.trananhthi.service.ReactionService;
@@ -24,7 +24,7 @@ public class ReactionController extends BaseController {
     private static final String ROOT = "/reaction";
 
     @PostMapping(V1 + ROOT + "/express/{postID}")
-    public ResponseEntity<?> expressReaction (@RequestHeader(name = "Authorization") String token,@PathVariable String postID, @RequestBody ExpressReactionDTO dto)
+    public ResponseEntity<?> expressReaction (@RequestHeader(name = "Authorization") String token,@PathVariable String postID, @RequestBody ExpressReactionDto dto)
     {
         if (token != null && token.startsWith("Bearer ")) {
             String jwtToken = token.substring(7);
@@ -42,9 +42,9 @@ public class ReactionController extends BaseController {
     }
 
     @GetMapping(V1 + ROOT + "/get/{postID}")
-    public ResponseEntity<List<ReactionDTO>> ggetAllReactionByUserPostID(@PathVariable String postID)
+    public ResponseEntity<List<ReactionDto>> ggetAllReactionByUserPostID(@PathVariable String postID)
     {
-        List<ReactionDTO> reactionList=  reactionService.getAllReactionByUserPostID(postID,"active");
+        List<ReactionDto> reactionList=  reactionService.getAllReactionByUserPostID(postID,"active");
         return ResponseEntity.ok().body(reactionList);
     }
 }

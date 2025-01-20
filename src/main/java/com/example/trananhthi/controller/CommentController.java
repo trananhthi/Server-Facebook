@@ -2,8 +2,8 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.dto.request.CustomSuccessResponse;
-import com.example.trananhthi.dto.CommentDTO;
-import com.example.trananhthi.dto.request.CreateCommentDTO;
+import com.example.trananhthi.dto.CommentDto;
+import com.example.trananhthi.dto.request.CreateCommentDto;
 import com.example.trananhthi.dto.response.Top2LatestCommentsDTO;
 import com.example.trananhthi.entity.Comment;
 import com.example.trananhthi.exception.CustomException;
@@ -32,7 +32,7 @@ public class CommentController extends BaseController {
     private static final String ROOT = "/comment";
 
     @PostMapping(V1 + ROOT + "/create/{postID}")
-    public ResponseEntity<?> createComment(@RequestHeader(name = "Authorization") String token, @PathVariable String postID, @RequestBody CreateCommentDTO dto)
+    public ResponseEntity<?> createComment(@RequestHeader(name = "Authorization") String token, @PathVariable String postID, @RequestBody CreateCommentDto dto)
     {
         if (token != null && token.startsWith("Bearer ")) {
             String jwtToken = token.substring(7);
@@ -53,17 +53,17 @@ public class CommentController extends BaseController {
     }
 
     @GetMapping(V1 + ROOT + "/get/{postID}")
-    public ResponseEntity<Page<CommentDTO>> getAllCommentByUserPostID(@PathVariable String postID,@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "7")  int size)
+    public ResponseEntity<Page<CommentDto>> getAllCommentByUserPostID(@PathVariable String postID, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "7")  int size)
     {
         Pageable pageable = PageRequest.of(page,size, Sort.by("createdAt").descending());
-        Page<CommentDTO> commentList=  commentService.getAllCommentByUserPostID(postID,"active",pageable);
+        Page<CommentDto> commentList=  commentService.getAllCommentByUserPostID(postID,"active",pageable);
         return ResponseEntity.ok().body(commentList);
     }
 
     @GetMapping(V1 + ROOT + "/get/top-2-lastest-comments/{postID}")
     public ResponseEntity<Top2LatestCommentsDTO> getTop2LatestCommentsDTO(@PathVariable String postID)
     {
-        List<CommentDTO> commentList=  commentService.getTop2LatestComments(postID,"active");
+        List<CommentDto> commentList=  commentService.getTop2LatestComments(postID,"active");
         Long total = commentService.totalComments(postID,"active");
         return ResponseEntity.ok().body(new Top2LatestCommentsDTO(commentList,total));
     }

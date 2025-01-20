@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ExpressReactionDTO {
-    private String typeReaction;
-    private String status;
+public class UpdatePrivacyDefaultDto {
+    private String privacyDefault;
 }
