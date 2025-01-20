@@ -2,7 +2,7 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.context.UserContext;
-import com.example.trananhthi.dto.request.CustomSuccessResponse;
+import com.example.trananhthi.dto.response.CustomSuccessResponse;
 import com.example.trananhthi.common.MapEntityToDTO;
 import com.example.trananhthi.dto.request.CreatePostDto;
 import com.example.trananhthi.dto.UserPostDTO;

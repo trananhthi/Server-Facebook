@@ -1,7 +1,7 @@
 package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
-import com.example.trananhthi.dto.request.CustomSuccessResponse;
+import com.example.trananhthi.dto.response.CustomSuccessResponse;
 import com.example.trananhthi.dto.CommentDto;
 import com.example.trananhthi.dto.request.CreateCommentDto;
 import com.example.trananhthi.dto.response.Top2LatestCommentsDTO;

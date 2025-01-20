@@ -50,7 +50,14 @@ public abstract class BaseServiceImpl<E extends BaseEntity, R extends CrudReposi
         Locale locale = this.localeResolver.resolveLocale(request);
         Locale.setDefault(locale);
 
-        return this.messageResource.getMessage(code, (Object[])null, locale);
+        return this.messageResource.getMessage(code, null, locale);
+    }
+
+    public String getMessageCode(String code, HttpServletRequest request, Object... args) {
+        Locale locale = this.localeResolver.resolveLocale(request);
+        Locale.setDefault(locale);
+
+        return this.messageResource.getMessage(code, args, locale);
     }
 
     public <T> Object getFieldValue(String fieldName, T object) {
