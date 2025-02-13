@@ -2,20 +2,18 @@ package com.example.trananhthi.service;
 
 import com.example.trananhthi.dto.request.CreatePostDto;
 import com.example.trananhthi.dto.RestPage;
-import com.example.trananhthi.dto.UserPostDTO;
+import com.example.trananhthi.dto.UserPostDto;
 import com.example.trananhthi.entity.UserPost;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface UserPostService {
-    UserPost createNewPost(UserPost userPost);
+    UserPostDto createNewPost(CreatePostDto dto, List<MultipartFile> files, HttpServletRequest request);
 
-    RestPage<UserPostDTO> getAllPost(Pageable pageable);
+    RestPage<UserPostDto> getAllPost(Pageable pageable);
 
-    List<UserPost> getAllUserPostsByAuthorId(String authorId);
-
-    UserPost getUserPostByID(String id);
-
-    UserPost updateUserPostByID(String id,String email, CreatePostDto dto);
+    UserPostDto updateUserPostById(String id, CreatePostDto dto, List<MultipartFile> files, HttpServletRequest request);
 }

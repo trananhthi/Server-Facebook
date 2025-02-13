@@ -1,19 +1,15 @@
 package com.example.trananhthi.service;
 
-import com.example.trananhthi.entity.ChatRoom;
+import com.example.trananhthi.dto.ChatRoomDto;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Date;
-
 public interface ChatRoomService {
-    ChatRoom createChatRoom(String userId1, String userId2);
 
-    ChatRoom getChatRoom(String userId1, String userId2);
+    ChatRoomDto getChatRoomOrCreateNewIfNotExist(String userId1, String userId2);
 
-    Page<ChatRoom> getChatRoomByUserId(String userId, Pageable pageable);
+    Page<ChatRoomDto> getListChatRoom(Pageable pageable, HttpServletRequest request);
 
-    ChatRoom getChatRoomById(String roomId);
-
-    void updateLastMessageTime(String roomId, Date lastMessageTime);
+    ChatRoomDto getChatRoom(String roomId, HttpServletRequest request);
 }

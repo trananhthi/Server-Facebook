@@ -1,13 +1,12 @@
 package com.example.trananhthi.exception;
 
-import com.example.trananhthi.dto.response.CustomErrorResponse;
+import com.example.trananhthi.dto.response.CustomResponse;
 import com.example.trananhthi.message.MessageCodes;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -29,53 +28,46 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<CustomErrorResponse> handleUnwantedException(Exception e) {
+    public ResponseEntity<CustomResponse> handleUnwantedException(Exception e, HttpServletRequest request) {
         logger.error(e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CustomErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),"UnknownError","Lỗi không xác định"));
+        String message = messageSource.getMessage(MessageCodes.UNKNOWN_ERROR, null, request.getLocale());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CustomResponse(MessageCodes.UNKNOWN_ERROR,message));
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<?> handleNotFound(NoHandlerFoundException ex, HttpServletRequest request) {
         String message = messageSource.getMessage(MessageCodes.ENDPOINT_NOTFOUND, new Object[]{ex.getRequestURL()}, request.getLocale());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new CustomErrorResponse(HttpStatus.NOT_FOUND.value(), MessageCodes.ENDPOINT_NOTFOUND, message));
+                .body(new CustomResponse(MessageCodes.ENDPOINT_NOTFOUND, message));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<CustomErrorResponse> handleBodyIsMissingException(HttpMessageNotReadableException e)
+    public ResponseEntity<CustomResponse> handleBodyIsMissingException(HttpMessageNotReadableException e)
     {
         logger.error(e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorResponse(HttpStatus.BAD_REQUEST.value(), "BodyRequestNotFound","Thiếu body request"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomResponse("BodyRequestNotFound","Thiếu body request"));
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<CustomErrorResponse> handleCustomException(CustomException e) {
+    public ResponseEntity<CustomResponse> handleCustomException(CustomException e) {
         logger.error(e.getMessage());
-        return ResponseEntity.status(e.getErrorCode()).body(new CustomErrorResponse(e.getErrorCode(), e.getErrorKey(),e.getMessage()));
+        return ResponseEntity.status(e.getErrorCode()).body(new CustomResponse(e.getErrorKey(),e.getMessage()));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<CustomErrorResponse> handleSignInException(Exception e)
+    public ResponseEntity<CustomResponse> handleSignInException(Exception e, HttpServletRequest request)
     {
         logger.error(e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),"EmailOrPasswordInValid","Email hoặc mật khẩu không đúng"));
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<CustomErrorResponse> handleDuplicateEmailSignUpException(DataIntegrityViolationException e)
-    {
-        logger.error(e.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CustomErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),"EmailAlreadyExist","Email đã tồn tại"));
+        String message = messageSource.getMessage(MessageCodes.EMAIL_OR_PASSWORD_INCORRECT, null, request.getLocale());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomResponse(
+                MessageCodes.EMAIL_OR_PASSWORD_INCORRECT,message));
     }
 
     @ExceptionHandler(value = TokenRefreshException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ResponseEntity<CustomErrorResponse> handleTokenRefreshException(TokenRefreshException e) {
+    public ResponseEntity<CustomResponse> handleTokenRefreshException(TokenRefreshException e) {
         logger.error(e.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomErrorResponse(
-                HttpStatus.FORBIDDEN.value(),
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new CustomResponse(
                 e.getErrorKey(),
                 e.getMessage()));
     }

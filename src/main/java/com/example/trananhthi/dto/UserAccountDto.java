@@ -1,16 +1,19 @@
 package com.example.trananhthi.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"password","role","status","timeUpdated","loginAttempts","name"})
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserAccountDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,9 +23,14 @@ public class UserAccountDto implements Serializable {
     private String lastName;
     private String firstName;
     private String phone;
-    private Date birthday;
+    private LocalDate birthday;
     private String gender;
     private String avatar;
-    private Date timeCreated;
+    private LocalDateTime createdAt;
     private String privacyDefault;
+
+    public UserAccountDto(String id)
+    {
+        this.id = id;
+    }
 }

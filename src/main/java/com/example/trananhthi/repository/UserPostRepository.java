@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface UserPostRepository extends CrudRepository<UserPost,String> {
-    List<UserPost> findAllByAuthor_Id(String authorId);
+//    List<UserPost> findAllByAuthor_Id(String authorId);
     Page<UserPost> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

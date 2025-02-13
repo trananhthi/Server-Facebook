@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -82,12 +83,12 @@ public class ConfirmCodeServiceImpl extends BaseServiceImpl<ConfirmCode, Confirm
     @Transactional
     protected void deleteNotConfirmedAccount()
     {
-        Date currentDate = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-        calendar.add(Calendar.DAY_OF_MONTH, -2);
-        Date cutoffDate = calendar.getTime();
-        userAccountRepository.deleteUserAccountsByStatusAndTimeCreatedBefore("not_activated",cutoffDate);
+        // Lấy thời gian hiện tại
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        // Tạo một đối tượng LocalDateTime đại diện cho ngày cutoff (cắt ngày) - 2 ngày trước
+        LocalDateTime cutoffDateTime = currentDateTime.minusDays(2);
+        userAccountRepository.deleteUserAccountsByStatusAndCreatedAtBefore("not_activated",cutoffDateTime);
     }
 
     @Override

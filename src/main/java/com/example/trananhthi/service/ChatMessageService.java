@@ -5,9 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ChatMessageService {
-    ChatMessage save(ChatMessage chatMessage);
 
     Page<ChatMessage> getChatMessages(String chatRoomId, Pageable pageable);
 
-    ChatMessage getLastMessage(String chatRoomId);
+    void processMessage(ChatMessage chatMessage);
 }

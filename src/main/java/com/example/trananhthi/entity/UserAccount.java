@@ -1,6 +1,8 @@
 package com.example.trananhthi.entity;
 
 import com.example.trananhthi.common.BaseEntity;
+import com.example.trananhthi.enumtype.Privacy;
+import com.example.trananhthi.enumtype.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -9,6 +11,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serial;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,9 +24,10 @@ public class UserAccount extends BaseEntity {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "password")
     private String password;
 
     @Column(name = "last_name")
@@ -39,8 +43,7 @@ public class UserAccount extends BaseEntity {
     private String phone;
 
     @Column(name = "birthday")
-    @Temporal(TemporalType.DATE)
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(name = "gender")
     private String gender;
@@ -48,22 +51,16 @@ public class UserAccount extends BaseEntity {
     @Column(name = "avatar",columnDefinition = "json")
     private String avatar;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
-
-    @Column(name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timeCreated;
-
-    @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timeUpdated;
+    private Status status;
 
     @Column(name = "login_attempts")
     private Integer loginAttempts;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "privacy_default")
-    private String privacyDefault;
+    private Privacy privacyDefault;
 
     @Column(name = "name")
     private String name;

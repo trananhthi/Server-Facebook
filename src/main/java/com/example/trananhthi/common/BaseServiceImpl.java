@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.trananhthi.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.NonNull;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,6 @@ import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.LocaleResolver;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -104,7 +103,8 @@ public abstract class BaseServiceImpl<E extends BaseEntity, R extends CrudReposi
         }
     }
 
-    public String uploadFileToS3(String bucketName, String folder,MultipartFile file) throws IOException {
+    @SneakyThrows
+    public String uploadFileToS3(String bucketName, String folder, MultipartFile file) {
 
         if (bucketName == null || bucketName.isEmpty()) {
             throw new IllegalArgumentException("Bucket name must not be null or empty");

@@ -1,6 +1,7 @@
 package com.example.trananhthi.entity;
 
 import com.example.trananhthi.common.BaseEntity;
+import com.example.trananhthi.enumtype.PostStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serial;
-import java.util.Date;
 
 @Entity
 @DynamicInsert
@@ -24,29 +24,32 @@ public class UserPost extends BaseEntity {
     @JoinColumn(name = "author_id",referencedColumnName = "id")
     private UserAccount author;
 
+    @Column(name = "content")
     private String content;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
-
+    @Column(name = "type_post")
     private String typePost;
 
     @OneToOne
     @JoinColumn(name = "parent_post",referencedColumnName = "id")
     private UserPost parentPost;
 
+    @Column(name = "view")
     private Integer view;
 
+    @Column(name = "privacy")
     private String privacy;
 
+    @Column(name = "tag")
     private String tag;
 
+    @Column(name = "hashtag")
     private String hashtag;
 
+    @Column(name = "priority")
     private Integer priority;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private PostStatus status;
 }

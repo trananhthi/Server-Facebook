@@ -17,8 +17,10 @@ public class RefreshToken extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "user_account_id",referencedColumnName = "id")
     private UserAccount userAccount;
+
     @Column(nullable = false,unique = true)
     private String token;
+
     @Column(nullable = false)
     private Instant expiryDate;
 }

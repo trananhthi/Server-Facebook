@@ -3,6 +3,7 @@ package com.example.trananhthi.service.impl;
 import com.example.trananhthi.common.BaseServiceImpl;
 import com.example.trananhthi.dto.PostImageDto;
 import com.example.trananhthi.entity.PostImage;
+import com.example.trananhthi.enumtype.Status;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.repository.PostImageRepository;
 import com.example.trananhthi.service.PostImageService;
@@ -35,10 +36,10 @@ public class PostImageServiceImpl extends BaseServiceImpl<PostImage, PostImageRe
     @Override
     public Boolean deleteImage(String id)
     {
-        Optional<PostImage> postImage = postImageRepository.findByIdAndStatus(id,"actived");
+        Optional<PostImage> postImage = postImageRepository.findByIdAndStatus(id,Status.ACT);
         if(postImage.isPresent())
         {
-            postImage.get().setStatus("deleted");
+            postImage.get().setStatus(Status.DEL);
             String url = postImage.get().getUrl();
             s3Service.deleteImageFromS3("2502-post-image",url.substring(url.lastIndexOf('/') + 1));
             postImageRepository.save(postImage.get());

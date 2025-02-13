@@ -1,14 +1,12 @@
 package com.example.trananhthi.dto;
 
-import com.example.trananhthi.common.MapEntityToDTO;
-import com.example.trananhthi.entity.UserAccount;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -21,16 +19,14 @@ public class CommentDto implements Serializable {
     private String postId;
     private UserAccountDto userAccount;
     private String content;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public CommentDto(String id, String postId, UserAccount userAccount, String content, Date createdAt, Date updatedAt)
+    public CommentDto(String id, String postId, UserAccountDto userAccount, String content, LocalDateTime createdAt, LocalDateTime updatedAt)
     {
-        MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
-
         this.id = id;
         this.postId = postId;
-        this.userAccount = mapEntityToDTO.mapUserAccountToDTO(userAccount);
+        this.userAccount = userAccount;
         this.content = content;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

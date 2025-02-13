@@ -1,18 +1,18 @@
 package com.example.trananhthi.dto;
 
-import com.example.trananhthi.common.MapEntityToDTO;
-import com.example.trananhthi.entity.UserAccount;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@JsonIgnoreProperties(value = {"status"})
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReactionDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -21,16 +21,15 @@ public class ReactionDto implements Serializable {
     private String postId;
     private UserAccountDto userAccount;
     private String typeReaction;
-    private Date createdAt;
+    private LocalDateTime createdAt;
+    private String status;
 
-    public ReactionDto(String id, String postId, UserAccount userAccount, String typeReaction, Date createdAt)
+    public ReactionDto(String id, String postId, UserAccountDto userAccount, String typeReaction, LocalDateTime createdAt)
     {
-        MapEntityToDTO mapEntityToDTO = MapEntityToDTO.getInstance();
         this.id = id;
         this.postId = postId;
-        this.userAccount = mapEntityToDTO.mapUserAccountToDTO(userAccount);
+        this.userAccount = userAccount;
         this.typeReaction = typeReaction;
         this.createdAt = createdAt;
-
     }
 }

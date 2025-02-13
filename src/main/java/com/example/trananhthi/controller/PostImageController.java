@@ -1,7 +1,7 @@
 package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
-import com.example.trananhthi.dto.response.CustomSuccessResponse;
+import com.example.trananhthi.dto.response.CustomResponse;
 import com.example.trananhthi.exception.CustomException;
 import com.example.trananhthi.service.PostImageService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class PostImageController extends BaseController {
     {
         if(postImageService.deleteImage(imageID))
         {
-            return ResponseEntity.ok().body(new CustomSuccessResponse("Đã xóa thành công","success"));
+            return ResponseEntity.ok().body(new CustomResponse("Đã xóa thành công","success"));
         }
         else {
             throw new CustomException(HttpStatus.BAD_REQUEST.value(), "ImageIsNotDeleted","Xóa không thành công");
