@@ -29,7 +29,6 @@ public class ReactionServiceImpl extends BaseServiceImpl<Reaction, ReactionRepos
     {
         try
         {
-            if(status == null) status = "ACT";
             String userId = UserContext.getUserId();
             Optional<Reaction> reaction = reactionRepository.findByPostIdAndUserId(postId,userId);
             if(reaction.isPresent())
@@ -57,7 +56,7 @@ public class ReactionServiceImpl extends BaseServiceImpl<Reaction, ReactionRepos
     }
 
     @Override
-    public List<ReactionDto> getAllReactionByUserPostID(String userPostId, String status)
+    public List<ReactionDto> getAllReactionByUserPostID(String userPostId)
     {
         return reactionRepository.findReactionsByPostId(userPostId);
     }

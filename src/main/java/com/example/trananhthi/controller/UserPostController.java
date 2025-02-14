@@ -31,7 +31,7 @@ public class UserPostController extends BaseController {
     }
 
     @GetMapping(V1 + ROOT + "/get")
-    public ResponseEntity<Page<UserPostDto>> getAllPost(@RequestParam(defaultValue = "-1") int page, @RequestParam(defaultValue = "0")  int size)
+    public ResponseEntity<?> getAllPost(@RequestParam(defaultValue = "-1") int page, @RequestParam(defaultValue = "0")  int size)
     {
         Pageable pageable;
         if(page == -1 || size == 0)
@@ -41,8 +41,7 @@ public class UserPostController extends BaseController {
         else{
             pageable = PageRequest.of(page,size);
         }
-        Page<UserPostDto> userPostDTOList = userPostService.getAllPost(pageable);
-        return ResponseEntity.ok().body(userPostDTOList);
+        return ResponseEntity.ok().body(userPostService.getAllPost(pageable));
     }
 
     @PatchMapping(V1 + ROOT + "/update/{postId}")

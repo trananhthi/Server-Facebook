@@ -55,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write("{\"statusCode\": 401,\"errorKey\":\"TokenIsExpired\",\"message\": \"Token của bạn hết hạn\", \"date\": \"" + new Date() +  "\" }");
+                    response.getWriter().write("{\"statusCode\": 401,\"key\":\"TokenIsExpired\",\"message\": \"Token của bạn hết hạn\", \"date\": \"" + new Date() +  "\" }");
                     return;
                 }
                 catch (Exception e)
@@ -63,7 +63,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write("{\"statusCode\": 401,\"errorKey\":\"TokenIsInvalid\", \"message\": \"Mã Token không hợp lệ\" , \"date\": \"" + new Date() +  "\" }");
+                    response.getWriter().write("{\"statusCode\": 401,\"key\":\"TokenIsInvalid\", \"message\": \"Mã Token không hợp lệ\" , \"date\": \"" + new Date() +  "\" }");
                     return;
                 }
             }
@@ -71,7 +71,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"statusCode\": 401,\"errorKey\":\"YouDoNotHavePermission\",\"message\": \"Bạn không có quyền truy cập\", \"date\": \"" + new Date() +  "\" }" );
+                response.getWriter().write("{\"statusCode\": 401,\"key\":\"YouDoNotHavePermission\",\"message\": \"Bạn không có quyền truy cập\", \"date\": \"" + new Date() +  "\" }" );
                 return;
             }
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {

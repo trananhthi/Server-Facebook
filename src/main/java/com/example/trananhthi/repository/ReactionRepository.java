@@ -4,7 +4,6 @@ import com.example.trananhthi.dto.ReactionDto;
 import com.example.trananhthi.entity.Reaction;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,11 +16,11 @@ public interface ReactionRepository extends CrudRepository<Reaction,String> {
             "r.id, r.postId, " +
             "new com.example.trananhthi.dto.UserAccountDto(u.id, u.email, u.firstName, u.lastName, " +
             "u.phone, u.birthday, u.gender, u.avatar, u.createdAt, u.privacyDefault), " +
-            "r.typeReaction, r.createdAt) " +
+            "r.typeReaction, r.createdAt, r.status) " +
             "FROM Reaction r " +
             "JOIN UserAccount u ON r.userId = u.id " +
             "WHERE r.postId = :postId AND r.status = 'ACT'")
-    List<ReactionDto> findReactionsByPostId(@Param("postId") String postId);
+    List<ReactionDto> findReactionsByPostId(String postId);
 
     @Query("SELECT r FROM Reaction r WHERE r.postId = :postId and r.userId = :userId")
     Optional<Reaction> findByPostIdAndUserId(String postId, String userId);

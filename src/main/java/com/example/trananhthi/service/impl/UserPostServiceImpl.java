@@ -79,8 +79,8 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
     @Cacheable("allPost")
     public RestPage<UserPostDto> getAllPost(Pageable pageable)
     {
-        Page<UserPost> userPostList = userPostRepository.findAllByOrderByCreatedAtDesc(pageable);
-        Page<UserPostDto> userPostDTOList = userPostList.map(userPost -> {
+        Page<UserPost> userPostPage = userPostRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<UserPostDto> userPostDTOList = userPostPage.map(userPost -> {
             UserPostDto userPostDTO = userPostMapper.toDto(userPost);
             userPostDTO.setImage(postImageService.getAllImageByPostId(userPostDTO.getId(), Status.ACT.toString()));
             return userPostDTO;

@@ -29,9 +29,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<CustomResponse> handleUnwantedException(Exception e, HttpServletRequest request) {
-        logger.error(e.getMessage());
-        String message = messageSource.getMessage(MessageCodes.UNKNOWN_ERROR, null, request.getLocale());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CustomResponse(MessageCodes.UNKNOWN_ERROR,message));
+        logger.error("Unhandled exception at {}: ", request.getRequestURI(), e);
+        String message = messageSource.getMessage(MessageCodes.INTERNAL_SERVER_ERROR, null, request.getLocale());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new CustomResponse(MessageCodes.INTERNAL_SERVER_ERROR,message));
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)

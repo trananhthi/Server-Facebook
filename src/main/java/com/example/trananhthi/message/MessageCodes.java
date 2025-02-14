@@ -19,8 +19,8 @@ public class MessageCodes {
     public static final String EMAIL_OR_PASSWORD_INCORRECT = "email.or.password.incorrect";
     /** refresh.token.isinexistent=Refresh token is inexistent */
     public static final String REFRESH_TOKEN_ISINEXISTENT = "refresh.token.isinexistent";
-    /** unknown.error=Unknown error */
-    public static final String UNKNOWN_ERROR = "unknown.error";
+    /** internal.server.error=Internal server error */
+    public static final String INTERNAL_SERVER_ERROR = "internal.server.error";
     /** account.notExist=Account does not exist: {0} */
     public static final String ACCOUNT_NOTEXIST = "account.notExist";
     /** account.emailConfirmed=Account is already confirmed */

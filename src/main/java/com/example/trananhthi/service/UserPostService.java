@@ -1,10 +1,10 @@
 package com.example.trananhthi.service;
 
-import com.example.trananhthi.dto.request.CreatePostDto;
 import com.example.trananhthi.dto.RestPage;
+import com.example.trananhthi.dto.request.CreatePostDto;
 import com.example.trananhthi.dto.UserPostDto;
-import com.example.trananhthi.entity.UserPost;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 

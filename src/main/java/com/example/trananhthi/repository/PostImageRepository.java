@@ -5,7 +5,6 @@ import com.example.trananhthi.entity.PostImage;
 import com.example.trananhthi.enumtype.Status;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,9 +12,9 @@ import java.util.Optional;
 
 @Repository
 public interface PostImageRepository extends CrudRepository<PostImage,String> {
-    @Query("SELECT new com.example.trananhthi.dto.PostImageDto(p.id, p.url) " +
+    @Query("SELECT new com.example.trananhthi.dto.PostImageDto(p.id, p.url,p.status, p.createdAt, p.updatedAt) " +
             "FROM PostImage p WHERE p.postId = :postId and p.status = :status")
-    List<PostImageDto> findAllImageByPostId(@Param("postId") String postId, @Param("status") String status);
+    List<PostImageDto> findAllImageByPostId(String postId, Status status);
 
     Optional<PostImage> findByIdAndStatus(String id, Status status);
 }

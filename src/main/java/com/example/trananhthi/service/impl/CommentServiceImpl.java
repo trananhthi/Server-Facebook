@@ -57,14 +57,14 @@ public class CommentServiceImpl extends BaseServiceImpl<Comment, CommentReposito
     @Override
     public Page<CommentDto> getAllCommentByUserPostID(String postId, String status, Pageable pageable)
     {
-        return commentRepository.findCommentsByPostId(postId,status,pageable);
+        return commentRepository.findCommentsByPostId(postId,Enum.valueOf(Status.class,status), pageable);
     }
 
     @Override
     public List<CommentDto> getTop2LatestComments(String postId, String status)
     {
         Pageable pageable = PageRequest.of(0, 2);
-        return commentRepository.findCommentsByPostId(postId,status,pageable).getContent();
+        return commentRepository.findCommentsByPostId(postId, Enum.valueOf(Status.class,status), pageable).getContent();
     }
 
     @Override

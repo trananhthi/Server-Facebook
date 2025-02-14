@@ -1,5 +1,6 @@
 package com.example.trananhthi.dto;
 
+import com.example.trananhthi.enumtype.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,9 +22,12 @@ public class PostImageDto implements Serializable {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public PostImageDto(String id, String url) {
+    public PostImageDto(String id, String url, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.url = url;
+        this.status = status.getValue();
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
 }

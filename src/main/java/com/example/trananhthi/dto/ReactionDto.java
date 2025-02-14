@@ -1,5 +1,6 @@
 package com.example.trananhthi.dto;
 
+import com.example.trananhthi.enumtype.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,14 +23,15 @@ public class ReactionDto implements Serializable {
     private UserAccountDto userAccount;
     private String typeReaction;
     private LocalDateTime createdAt;
-    private String status;
+    private Status status;
 
-    public ReactionDto(String id, String postId, UserAccountDto userAccount, String typeReaction, LocalDateTime createdAt)
-    {
-        this.id = id;
-        this.postId = postId;
-        this.userAccount = userAccount;
-        this.typeReaction = typeReaction;
-        this.createdAt = createdAt;
-    }
+//    public ReactionDto(String id, String postId, UserAccountDto userAccount,
+//                       String typeReaction, LocalDateTime createdAt, String status)
+//    {
+//        this.id = id;
+//        this.postId = postId;
+//        this.userAccount = userAccount;
+//        this.typeReaction = typeReaction;
+//        this.createdAt = createdAt;
+//    }
 }

@@ -7,10 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface CommentRepository extends CrudRepository<Comment,String> {
@@ -23,7 +20,7 @@ public interface CommentRepository extends CrudRepository<Comment,String> {
             "WHERE c.postId = :postId " +
             "AND c.status = :status " +
             "ORDER BY c.createdAt DESC")
-    Page<CommentDto> findCommentsByPostId(@Param("postId") String postId, @Param("status") String status, Pageable pageable);
+    Page<CommentDto> findCommentsByPostId(String postId, Status status, Pageable pageable);
 
     Long countAllByPostIdAndStatus(String postId, Status status);
 }

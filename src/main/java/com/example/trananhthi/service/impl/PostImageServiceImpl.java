@@ -30,7 +30,7 @@ public class PostImageServiceImpl extends BaseServiceImpl<PostImage, PostImageRe
     @Override
     public List<PostImageDto> getAllImageByPostId(String userPostID, String status)
     {
-        return  postImageRepository.findAllImageByPostId(userPostID,status);
+        return  postImageRepository.findAllImageByPostId(userPostID,Enum.valueOf(Status.class,status));
     }
 
     @Override

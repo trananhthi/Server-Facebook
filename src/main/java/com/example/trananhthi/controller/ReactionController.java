@@ -22,13 +22,15 @@ public class ReactionController extends BaseController {
     public ResponseEntity<?> expressReaction (@PathVariable String postId, @RequestBody ReactionDto dto,
                                               HttpServletRequest request)
     {
-        return ResponseEntity.status(HttpStatus.CREATED).body(reactionService.expressReaction(postId, dto.getTypeReaction(), dto.getStatus(), request));
+        if(dto.getStatus() == null) dto.setStatus(Status.ACT);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(reactionService.expressReaction(postId, dto.getTypeReaction(), dto.getStatus().toString(), request));
     }
 
     @GetMapping(V1 + ROOT + "/get/{postId}")
     public ResponseEntity<List<ReactionDto>> ggetAllReactionByUserPostID(@PathVariable String postId)
     {
-        List<ReactionDto> reactionList=  reactionService.getAllReactionByUserPostID(postId, Status.ACT.toString());
+        List<ReactionDto> reactionList=  reactionService.getAllReactionByUserPostID(postId);
         return ResponseEntity.ok().body(reactionList);
     }
 }
