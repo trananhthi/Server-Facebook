@@ -1,12 +1,13 @@
 package com.example.trananhthi.service.impl;
 
 import com.example.trananhthi.common.BaseServiceImpl;
-import com.example.trananhthi.dto.PostImageDto;
-import com.example.trananhthi.entity.PostImage;
+import com.example.trananhthi.dto.PostMediaDto;
+import com.example.trananhthi.entity.PostMedia;
 import com.example.trananhthi.enumtype.Status;
 import com.example.trananhthi.exception.CustomException;
+import com.example.trananhthi.mapstruct.PostMediaMapper;
 import com.example.trananhthi.repository.PostImageRepository;
-import com.example.trananhthi.service.PostImageService;
+import com.example.trananhthi.service.PostMediaService;
 import com.example.trananhthi.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,26 +18,22 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class PostImageServiceImpl extends BaseServiceImpl<PostImage, PostImageRepository> implements PostImageService {
+public class PostMediaServiceImpl extends BaseServiceImpl<PostMedia, PostImageRepository> implements PostMediaService {
     private final PostImageRepository postImageRepository;
+    private final PostMediaMapper postMediaMapper;
     private final S3Service s3Service;
 
     @Override
-    public void createImage(PostImage postImage)
+    public List<PostMediaDto> findAllMediaByPostId(String userPostId, String status)
     {
-        postImageRepository.save(postImage);
+        List<PostMedia> postMedia = postImageRepository.findAllMediaByPostId(userPostId,Enum.valueOf(Status.class,status));
+        return postMediaMapper.toDto(postMedia);
     }
 
     @Override
-    public List<PostImageDto> getAllImageByPostId(String userPostID, String status)
+    public Boolean deleteMedia(String id)
     {
-        return  postImageRepository.findAllImageByPostId(userPostID,Enum.valueOf(Status.class,status));
-    }
-
-    @Override
-    public Boolean deleteImage(String id)
-    {
-        Optional<PostImage> postImage = postImageRepository.findByIdAndStatus(id,Status.ACT);
+        Optional<PostMedia> postImage = postImageRepository.findByIdAndStatus(id,Status.ACT);
         if(postImage.isPresent())
         {
             postImage.get().setStatus(Status.DEL);

@@ -2,6 +2,8 @@ package com.example.trananhthi.entity;
 
 import com.example.trananhthi.common.BaseEntity;
 import com.example.trananhthi.enumtype.PostStatus;
+import com.example.trananhthi.enumtype.Privacy;
+import com.example.trananhthi.enumtype.TypePost;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +29,9 @@ public class UserPost extends BaseEntity {
     @Column(name = "content")
     private String content;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type_post")
-    private String typePost;
+    private TypePost typePost;
 
     @OneToOne
     @JoinColumn(name = "parent_post",referencedColumnName = "id")
@@ -37,8 +40,9 @@ public class UserPost extends BaseEntity {
     @Column(name = "view")
     private Integer view;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "privacy")
-    private String privacy;
+    private Privacy privacy;
 
     @Column(name = "tag")
     private String tag;

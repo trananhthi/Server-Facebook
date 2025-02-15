@@ -2,11 +2,12 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.dto.request.CreatePostDto;
-import com.example.trananhthi.dto.UserPostDto;
 import com.example.trananhthi.service.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,14 @@ public class UserPostController extends BaseController {
     private static final String ROOT = "/post";
 
     @PostMapping(V1 + ROOT + "/create")
-    public ResponseEntity<?> createPost(@ModelAttribute CreatePostDto dto,
-                                        @RequestBody List<MultipartFile> files,
-                                        HttpServletRequest request){
-        return new ResponseEntity<>(userPostService.createNewPost(dto, files, request), HttpStatus.CREATED);
+    public ResponseEntity<?> createPost(@RequestParam(name = "data") String dataJson,
+                                        @RequestParam(name = "imageFiles") List<MultipartFile> imageFiles,
+                                        @RequestParam(name = "videoFiles") List<MultipartFile> videoFiles,
+                                        HttpServletRequest request) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        CreatePostDto dto = mapper.readValue(dataJson, CreatePostDto.class);
+        return new ResponseEntity<>(userPostService.createNewPost(dto, imageFiles, videoFiles, request), HttpStatus.CREATED);
     }
 
     @GetMapping(V1 + ROOT + "/get")
@@ -46,9 +51,14 @@ public class UserPostController extends BaseController {
 
     @PatchMapping(V1 + ROOT + "/update/{postId}")
     public ResponseEntity<?> updatePost(@PathVariable String postId,
-                                        @ModelAttribute CreatePostDto dto,
-                                        @RequestBody List<MultipartFile> files,
-                                        HttpServletRequest request ) {
-        return new ResponseEntity<>(userPostService.updateUserPostById(postId, dto, files, request), HttpStatus.OK);
+                                        @RequestParam(name = "data") String dataJson,
+                                        @RequestParam(name = "imageFiles") List<MultipartFile> imageFiles,
+                                        @RequestParam(name = "videoFiles") List<MultipartFile> videoFiles,
+                                        HttpServletRequest request ) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        CreatePostDto dto = mapper.readValue(dataJson, CreatePostDto.class);
+
+        return new ResponseEntity<>(userPostService.updateUserPostById(postId, dto, imageFiles, videoFiles, request), HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.trananhthi.entity;
 
 import com.example.trananhthi.common.BaseEntity;
+import com.example.trananhthi.enumtype.MediaType;
 import com.example.trananhthi.enumtype.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,10 +14,10 @@ import java.io.Serial;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "post_images")
+@Table(name = "post_media")
 @Getter
 @Setter
-public class PostImage extends BaseEntity {
+public class PostMedia extends BaseEntity {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -29,4 +30,15 @@ public class PostImage extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private MediaType type;
+
+    @Column(name = "size")
+    private Integer size;
+
+    @Column(name = "visual_index")
+    private Integer visualIndex;
+
 }

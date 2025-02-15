@@ -3,7 +3,7 @@ package com.example.trananhthi.controller;
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.dto.response.CustomResponse;
 import com.example.trananhthi.exception.CustomException;
-import com.example.trananhthi.service.PostImageService;
+import com.example.trananhthi.service.PostMediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class PostImageController extends BaseController {
-    private final PostImageService postImageService;
-    private static final String ROOT = "/post-image";
+public class PostMediaController extends BaseController {
+    private final PostMediaService postMediaService;
+    private static final String ROOT = "/post-media";
 
-    @PatchMapping(V1 + ROOT + "/delete/{imageID}")
-    public ResponseEntity<?> deleteImage (@PathVariable String imageID)
+    @PatchMapping(V1 + ROOT + "/delete/{imageId}")
+    public ResponseEntity<?> deleteImage (@PathVariable String imageId)
     {
-        if(postImageService.deleteImage(imageID))
+        if(postMediaService.deleteMedia(imageId))
         {
             return ResponseEntity.ok().body(new CustomResponse("Đã xóa thành công","success"));
         }

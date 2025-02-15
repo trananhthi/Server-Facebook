@@ -1,7 +1,8 @@
 package com.example.trananhthi.dto;
 
 import com.example.trananhthi.entity.UserPost;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.example.trananhthi.enumtype.Privacy;
+import com.example.trananhthi.enumtype.TypePost;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,15 +29,15 @@ public class UserPostDto implements Serializable {
 
     private LocalDateTime updatedAt;
 
-    private String typePost;
+    private TypePost typePost;
 
-    private List<PostImageDto> image;
+    private List<PostMediaDto> mediaList;
 
     private UserPost parentPost;
 
     private Integer view;
 
-    private String privacy;
+    private Privacy privacy;
 
     private String tag;
 

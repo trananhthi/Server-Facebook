@@ -1,6 +1,7 @@
 package com.example.trananhthi.dto;
 
-import com.example.trananhthi.enumtype.Status;
+import com.example.trananhthi.enumtype.MediaType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,22 +13,25 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostImageDto implements Serializable {
+@AllArgsConstructor
+public class PostMediaDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     private String id;
-    private String url;
-    private String status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
-    public PostImageDto(String id, String url, Status status, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.url = url;
-        this.status = status.getValue();
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
+    private String url;
+
+    private String status;
+
+    private MediaType type;
+
+    private Integer size;
+
+    private Integer visualIndex;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
 }
