@@ -3,6 +3,7 @@ package com.example.trananhthi.service.impl;
 import com.example.trananhthi.common.BaseServiceImpl;
 import com.example.trananhthi.entity.ConfirmCode;
 import com.example.trananhthi.entity.UserAccount;
+import com.example.trananhthi.enumtype.Status;
 import com.example.trananhthi.repository.ConfirmCodeRepository;
 import com.example.trananhthi.repository.UserAccountRepository;
 import com.example.trananhthi.service.ConfirmCodeService;
@@ -16,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,7 +87,7 @@ public class ConfirmCodeServiceImpl extends BaseServiceImpl<ConfirmCode, Confirm
 
         // Tạo một đối tượng LocalDateTime đại diện cho ngày cutoff (cắt ngày) - 2 ngày trước
         LocalDateTime cutoffDateTime = currentDateTime.minusDays(2);
-        userAccountRepository.deleteUserAccountsByStatusAndCreatedAtBefore("not_activated",cutoffDateTime);
+        userAccountRepository.deleteUserAccountsByStatusAndCreatedAtBefore(Status.TEM,cutoffDateTime);
     }
 
     @Override

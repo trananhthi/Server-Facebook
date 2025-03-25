@@ -10,7 +10,6 @@ import com.example.trananhthi.entity.PostMedia;
 import com.example.trananhthi.entity.UserAccount;
 import com.example.trananhthi.entity.UserPost;
 import com.example.trananhthi.enumtype.MediaType;
-import com.example.trananhthi.enumtype.Privacy;
 import com.example.trananhthi.enumtype.Status;
 import com.example.trananhthi.enumtype.TypePost;
 import com.example.trananhthi.exception.CustomException;
@@ -28,16 +27,25 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.example.trananhthi.util.Utils.getVideoDimensions;
 
 @Service
 @RequiredArgsConstructor
@@ -48,11 +56,14 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
     private final PostImageRepository postImageRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserPostMapper userPostMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(UserPostServiceImpl.class);
 
     @Override
     @SneakyThrows
-    public UserPostDto createNewPost(CreatePostDto dto, List<MultipartFile> imageFiles,
-                                     List<MultipartFile> videoFiles, HttpServletRequest request)
+    @Transactional
+    public UserPostDto createNewPost(CreatePostDto dto, List<MultipartFile> imageFiles, List<Integer> imageIndexes,
+                                     List<MultipartFile> videoFiles,  List<Integer> videoIndexes, HttpServletRequest request)
     {
         UserPost userPost = new UserPost();
         String userId = UserContext.getUserId();
@@ -65,18 +76,23 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
         String userPostId = UUID.randomUUID().toString();
         userPost.setId(userPostId);
         userPost.setContent(dto.getContent());
-        userPost.setTypePost(Enum.valueOf(TypePost.class,dto.getTypePost()));
-        userPost.setPrivacy(Enum.valueOf(Privacy.class,dto.getPrivacy()));
+        userPost.setTypePost(dto.getTypePost());
+        userPost.setPrivacy(dto .getPrivacy());
         userPost.setParentPost(dto.getParentPost());
         userPost.setHashtag(dto.getHashtag());
         userPost.setTag(dto.getTag());
         userPost.setAuthor(author);
 
         userPostRepository.save(userPost);
+        //xoa cache
+        redisTemplate.delete("allPost::Page request [number: 0, size 5, sort: UNSORTED]");
+        if (dto.getTypePost() == TypePost.TEXT) {
+            return userPostMapper.toDto(userPost);
+        }
 
         // Upload ảnh & video bất đồng bộ
-        CompletableFuture<List<PostMedia>> imageUploadFuture = uploadImagesAsync(userPostId, userId, imageFiles);
-        CompletableFuture<List<PostMedia>> videoUploadFuture = uploadVideosAsync(userPostId, userId, videoFiles);
+        CompletableFuture<List<PostMedia>> imageUploadFuture = uploadImagesAsync(userPostId, userId, imageFiles, imageIndexes);
+        CompletableFuture<List<PostMedia>> videoUploadFuture = uploadVideosAsync(userPostId, userId, videoFiles, videoIndexes);
 
         // Chờ cả hai upload xong
         CompletableFuture.allOf(imageUploadFuture, videoUploadFuture).join();
@@ -87,10 +103,8 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
 
         UserPostDto userPostDto = userPostMapper.toDto(userPost);
 
-        if(!userPost.getTypePost().equals(TypePost.TEXT)) {
-            List<PostMediaDto> postMediaDto = postMediaService.findAllMediaByPostId(userPostId, Status.ACT.toString());
-            userPostDto.setMediaList(postMediaDto);
-        }
+        List<PostMediaDto> postMediaDto = postMediaService.findAllMediaByPostId(userPostId, Status.ACT.toString());
+        userPostDto.setMediaList(postMediaDto);
 
         return userPostDto;
     }
@@ -109,8 +123,9 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
     }
 
     @Override
-    public UserPostDto updateUserPostById(String id, CreatePostDto dto, List<MultipartFile> imageFiles,
-                                          List<MultipartFile> videoFiles, HttpServletRequest request)
+    @Transactional
+    public UserPostDto updateUserPostById(String id, CreatePostDto dto, List<MultipartFile> imageFiles, List<Integer> imageIndexes,
+                                          List<MultipartFile> videoFiles, List<Integer> videoIndexes, HttpServletRequest request)
     {
         String userId = UserContext.getUserId();
         UserPost userPost = userPostRepository.findById(id).orElseThrow(() ->
@@ -119,13 +134,13 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
         if(userPost.getAuthor().getId().equals(userId))
         {
             userPost.setContent(dto.getContent());
-            userPost.setTypePost(Enum.valueOf(TypePost.class,dto.getTypePost()));
-            userPost.setPrivacy(Enum.valueOf(Privacy.class,dto.getPrivacy()));
+            userPost.setTypePost(dto.getTypePost());
+            userPost.setPrivacy(dto.getPrivacy());
             UserPostDto userPostDto = userPostMapper.toDto(userPostRepository.save(userPost));
 
             // Upload ảnh & video bất đồng bộ
-            CompletableFuture<List<PostMedia>> imageUploadFuture = uploadImagesAsync(id, userId, imageFiles);
-            CompletableFuture<List<PostMedia>> videoUploadFuture = uploadVideosAsync(id, userId, videoFiles);
+            CompletableFuture<List<PostMedia>> imageUploadFuture = uploadImagesAsync(id, userId, imageFiles, imageIndexes);
+            CompletableFuture<List<PostMedia>> videoUploadFuture = uploadVideosAsync(id, userId, videoFiles, videoIndexes);
 
             // Chờ cả hai upload xong
             CompletableFuture.allOf(imageUploadFuture, videoUploadFuture).join();
@@ -149,7 +164,7 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
     }
 
     @Async
-    public CompletableFuture<List<PostMedia>> uploadImagesAsync(String postId, String userId, List<MultipartFile> files) {
+    public CompletableFuture<List<PostMedia>> uploadImagesAsync(String postId, String userId, List<MultipartFile> files, List<Integer> indexes) {
         return CompletableFuture.supplyAsync(() -> {
             if (files == null || files.isEmpty()) return Collections.emptyList();
 
@@ -160,13 +175,23 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
                 postMedia.setUrl(url);
                 postMedia.setType(MediaType.IMAGE);
                 postMedia.setSize((int) file.getSize() / 1024);
+                postMedia.setVisualIndex(indexes.get(files.indexOf(file)));
+                try {
+                    BufferedImage image = ImageIO.read(file.getInputStream());
+                    if (image != null) {
+                        postMedia.setWidth(image.getWidth());
+                        postMedia.setHeight(image.getHeight());
+                    }
+                } catch (IOException e) {
+                    logger.error("Error processing file: ", e);
+                }
                 return postMedia;
             }).collect(Collectors.toList());
         });
     }
 
     @Async
-    public CompletableFuture<List<PostMedia>> uploadVideosAsync(String postId, String userId, List<MultipartFile> files) {
+    public CompletableFuture<List<PostMedia>> uploadVideosAsync(String postId, String userId, List<MultipartFile> files, List<Integer> indexes) {
         return CompletableFuture.supplyAsync(() -> {
             if (files == null || files.isEmpty()) return Collections.emptyList();
 
@@ -177,6 +202,10 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
                 postMedia.setUrl(url);
                 postMedia.setType(MediaType.VIDEO);
                 postMedia.setSize((int) file.getSize() / 1024);
+                postMedia.setVisualIndex(indexes.get(files.indexOf(file)));
+                int[] dimensions = getVideoDimensions(file);
+                postMedia.setWidth(dimensions[0]);
+                postMedia.setHeight(dimensions[1]);
                 return postMedia;
             }).collect(Collectors.toList());
         });

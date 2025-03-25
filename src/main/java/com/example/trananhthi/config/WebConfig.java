@@ -12,12 +12,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private final UserInterceptor userInterceptor;
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedMethods("GET", "POST", "PUT", "DELETE")
-//                .allowedOrigins("http://localhost:3000");
-//    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowedOrigins("http://localhost:3000");
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

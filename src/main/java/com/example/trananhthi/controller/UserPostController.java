@@ -26,13 +26,16 @@ public class UserPostController extends BaseController {
 
     @PostMapping(V1 + ROOT + "/create")
     public ResponseEntity<?> createPost(@RequestParam(name = "data") String dataJson,
-                                        @RequestParam(name = "imageFiles") List<MultipartFile> imageFiles,
-                                        @RequestParam(name = "videoFiles") List<MultipartFile> videoFiles,
+                                        @RequestParam(name = "imageFiles", required = false) List<MultipartFile> imageFiles,
+                                        @RequestParam(name = "imageIndexes", required = false) List<Integer> imageIndexes,
+                                        @RequestParam(name = "videoFiles", required = false) List<MultipartFile> videoFiles,
+                                        @RequestParam(name = "videoIndexes", required = false) List<Integer> videoIndexes,
                                         HttpServletRequest request) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         CreatePostDto dto = mapper.readValue(dataJson, CreatePostDto.class);
-        return new ResponseEntity<>(userPostService.createNewPost(dto, imageFiles, videoFiles, request), HttpStatus.CREATED);
+        return new ResponseEntity<>(userPostService.createNewPost(dto, imageFiles ,imageIndexes ,
+                videoFiles, videoIndexes, request), HttpStatus.CREATED);
     }
 
     @GetMapping(V1 + ROOT + "/get")
@@ -53,12 +56,15 @@ public class UserPostController extends BaseController {
     public ResponseEntity<?> updatePost(@PathVariable String postId,
                                         @RequestParam(name = "data") String dataJson,
                                         @RequestParam(name = "imageFiles") List<MultipartFile> imageFiles,
+                                        @RequestParam(name = "imageIndexes", required = false) List<Integer> imageIndexes,
                                         @RequestParam(name = "videoFiles") List<MultipartFile> videoFiles,
+                                        @RequestParam(name = "videoIndexes", required = false) List<Integer> videoIndexes,
                                         HttpServletRequest request ) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         CreatePostDto dto = mapper.readValue(dataJson, CreatePostDto.class);
 
-        return new ResponseEntity<>(userPostService.updateUserPostById(postId, dto, imageFiles, videoFiles, request), HttpStatus.OK);
+        return new ResponseEntity<>(userPostService.updateUserPostById(postId, dto, imageFiles, imageIndexes,
+                videoFiles, videoIndexes, request), HttpStatus.OK);
     }
 }

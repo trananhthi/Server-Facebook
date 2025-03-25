@@ -1,5 +1,6 @@
 package com.example.trananhthi.repository;
 import com.example.trananhthi.entity.UserAccount;
+import com.example.trananhthi.enumtype.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
@@ -27,7 +28,7 @@ public interface UserAccountRepository extends CrudRepository<UserAccount,String
     Optional<UserAccount> findById(String id);
 
     @Modifying
-    void deleteUserAccountsByStatusAndCreatedAtBefore(String status, LocalDateTime createdTime);
+    void deleteUserAccountsByStatusAndCreatedAtBefore(Status status, LocalDateTime createdTime);
 
     @Modifying
     @Transactional

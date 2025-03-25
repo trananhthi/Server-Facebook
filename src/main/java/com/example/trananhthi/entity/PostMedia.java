@@ -41,4 +41,10 @@ public class PostMedia extends BaseEntity {
     @Column(name = "visual_index")
     private Integer visualIndex;
 
+    @Column(name = "width")
+    private Integer width;
+
+    @Column(name = "height")
+    private Integer height;
+
 }

@@ -30,6 +30,10 @@ public class PostMediaDto implements Serializable {
 
     private Integer visualIndex;
 
+    private Integer width;
+
+    private Integer height;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

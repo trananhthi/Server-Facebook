@@ -9,8 +9,8 @@ public enum TypePost implements EntityPropertyEnum<String> {
     IMAGE("IMAGE"),
     /* video */
     VIDEO("VIDEO"),
-    /* all */
-    ALL("ALL");
+    /* hybrid */
+    HYBRID("HYBRID");
 
     @Setter
     private String value;

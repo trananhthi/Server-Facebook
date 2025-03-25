@@ -1,6 +1,8 @@
 package com.example.trananhthi.dto.request;
 
 import com.example.trananhthi.entity.UserPost;
+import com.example.trananhthi.enumtype.Privacy;
+import com.example.trananhthi.enumtype.TypePost;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,9 +10,9 @@ import lombok.Setter;
 @Setter
 public class CreatePostDto {
     private String content;
-    private String typePost;
+    private TypePost typePost;
     private UserPost parentPost;
-    private String privacy;
+    private Privacy privacy;
     private String tag;
     private String hashtag;
 }
