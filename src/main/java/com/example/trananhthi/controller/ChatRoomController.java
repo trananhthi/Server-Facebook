@@ -31,7 +31,7 @@ public class ChatRoomController extends BaseController {
     }
 
     // Lấy thông tin chat room theo id, nếu không có thì tạo mới
-    @GetMapping(V1 + ROOT + "/chat-room")
+    @GetMapping(V1 + ROOT + "/by-user")
     public ResponseEntity<ChatRoomDto> getChatRoomOrCreateNewIfNotExist(@RequestParam String userId1, @RequestParam  String userId2) {
 
         ChatRoomDto chatRoomDto = chatRoomService.getChatRoomOrCreateNewIfNotExist(userId1, userId2);
@@ -39,7 +39,7 @@ public class ChatRoomController extends BaseController {
     }
 
     // Lấy thông tin chat room theo id
-    @GetMapping(V1 + ROOT + "/chat-room/{roomId}")
+    @GetMapping(V1 + ROOT + "/{roomId}")
     public ResponseEntity<ChatRoomDto> getChatRoom(@PathVariable String roomId,
                                                                 HttpServletRequest request) {
         return ResponseEntity.ok(chatRoomService.getChatRoom(roomId, request));

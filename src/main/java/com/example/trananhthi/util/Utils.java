@@ -1,20 +1,20 @@
 package com.example.trananhthi.util;
 
-import org.bytedeco.ffmpeg.avcodec.AVCodecParameters;
-import org.bytedeco.ffmpeg.avformat.AVFormatContext;
-import org.bytedeco.ffmpeg.avformat.AVStream;
-import org.bytedeco.ffmpeg.global.avformat;
-import org.bytedeco.javacpp.PointerPointer;
+import org.jcodec.api.FrameGrab;
+import org.jcodec.api.JCodecException;
+import org.jcodec.common.io.NIOUtils;
+import org.jcodec.common.io.SeekableByteChannel;
+import org.jcodec.common.model.Picture;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.bytedeco.ffmpeg.global.avutil;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -39,57 +39,32 @@ public class Utils {
 
     public static int[] getVideoDimensions(MultipartFile file) {
         File tempFile = null;
-        AVFormatContext formatContext = null;
-
         try {
-            // Allocate format context
-            formatContext = avformat.avformat_alloc_context();
-            if (formatContext == null) {
-                throw new RuntimeException("Could not allocate format context");
-            }
-
-            // Create temporary file from uploaded MultipartFile
-            tempFile = File.createTempFile("temp_video", ".mp4");
+            // Create a temporary file
+            tempFile = Files.createTempFile("temp_video", ".mp4").toFile();
             file.transferTo(tempFile);
-            String filePath = tempFile.getAbsolutePath();
 
-            // Open input file
-            if (avformat.avformat_open_input(formatContext, filePath, null, null) != 0) {
-                throw new RuntimeException("Could not open video file");
-            }
+            // Read video metadata
+            try (SeekableByteChannel channel = NIOUtils.readableChannel(tempFile)) {
+                FrameGrab grab = FrameGrab.createFrameGrab(channel);
+                Picture picture = grab.getNativeFrame();
 
-            // Read stream information
-            if (avformat.avformat_find_stream_info(formatContext, (PointerPointer<?>) null) < 0) {
-                throw new RuntimeException("Could not find stream information");
-            }
-
-            // Find video stream and get dimensions
-            for (int i = 0; i < formatContext.nb_streams(); i++) {
-                AVStream stream = formatContext.streams(i);
-                AVCodecParameters codecParams = stream.codecpar();
-
-                if (codecParams.codec_type() == avutil.AVMEDIA_TYPE_VIDEO) {
-                    int width = codecParams.width();
-                    int height = codecParams.height();
-                    return new int[]{width, height};
+                if (picture != null) {
+                    return new int[]{picture.getWidth(), picture.getHeight()};
                 }
+            } catch (JCodecException e) {
+                throw new RuntimeException(e);
             }
 
-            return new int[]{0, 0}; // No video stream found
-        } catch (Exception e) {
-            // Replace with your logging framework if you're not using java.util.logging
-            Logger.getLogger("VideoProcessor").severe("Error extracting video dimensions: " + e.getMessage());
+            return new int[]{0, 0}; // No video frame found
+        } catch (IOException e) {
+            Logger.getLogger("VideoUtils").severe("Error extracting video dimensions: " + e.getMessage());
             return new int[]{0, 0};
         } finally {
-            // Clean up resources
-            if (formatContext != null) {
-                avformat.avformat_close_input(formatContext);
-            }
-
+            // Clean up the temporary file
             if (tempFile != null && tempFile.exists()) {
                 tempFile.delete();
             }
         }
     }
-
 }

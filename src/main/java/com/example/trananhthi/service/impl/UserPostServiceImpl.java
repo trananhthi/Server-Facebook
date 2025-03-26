@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,50 +167,70 @@ public class UserPostServiceImpl extends BaseServiceImpl<UserPost,UserPostReposi
 
     @Async
     public CompletableFuture<List<PostMedia>> uploadImagesAsync(String postId, String userId, List<MultipartFile> files, List<Integer> indexes) {
-        return CompletableFuture.supplyAsync(() -> {
-            if (files == null || files.isEmpty()) return Collections.emptyList();
+        if (files == null || files.isEmpty()) return CompletableFuture.completedFuture(Collections.emptyList());
 
-            return files.stream().map(file -> {
-                String url = uploadFileToS3("2502-post-image", userId, file);
-                PostMedia postMedia = new PostMedia();
-                postMedia.setPostId(postId);
-                postMedia.setUrl(url);
-                postMedia.setType(MediaType.IMAGE);
-                postMedia.setSize((int) file.getSize() / 1024);
-                postMedia.setVisualIndex(indexes.get(files.indexOf(file)));
-                try {
-                    BufferedImage image = ImageIO.read(file.getInputStream());
-                    if (image != null) {
-                        postMedia.setWidth(image.getWidth());
-                        postMedia.setHeight(image.getHeight());
-                    }
-                } catch (IOException e) {
-                    logger.error("Error processing file: ", e);
-                }
-                return postMedia;
-            }).collect(Collectors.toList());
-        });
+        List<CompletableFuture<PostMedia>> futures = IntStream.range(0, files.size())
+                .mapToObj(i -> {
+                    MultipartFile file = files.get(i);
+                    int index = indexes.get(i);
+
+                    return uploadFileToS3Async("2502-post-image", userId, file)
+                            .thenApply(url -> {
+                                PostMedia postMedia = new PostMedia();
+                                postMedia.setPostId(postId);
+                                postMedia.setUrl(url);
+                                postMedia.setType(MediaType.IMAGE);
+                                postMedia.setSize((int) file.getSize() / 1024);
+                                postMedia.setVisualIndex(index);
+
+                                try {
+                                    BufferedImage image = ImageIO.read(file.getInputStream());
+                                    if (image != null) {
+                                        postMedia.setWidth(image.getWidth());
+                                        postMedia.setHeight(image.getHeight());
+                                    }
+                                } catch (IOException e) {
+                                    logger.error("Error processing file: ", e);
+                                }
+
+                                return postMedia;
+                            });
+                })
+                .toList();
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> futures.stream().map(CompletableFuture::join).collect(Collectors.toList()));
     }
 
     @Async
     public CompletableFuture<List<PostMedia>> uploadVideosAsync(String postId, String userId, List<MultipartFile> files, List<Integer> indexes) {
-        return CompletableFuture.supplyAsync(() -> {
-            if (files == null || files.isEmpty()) return Collections.emptyList();
+        if (files == null || files.isEmpty()) return CompletableFuture.completedFuture(Collections.emptyList());
 
-            return files.stream().map(file -> {
-                String url = uploadFileToS3("2502-post-video", userId, file);
-                PostMedia postMedia = new PostMedia();
-                postMedia.setPostId(postId);
-                postMedia.setUrl(url);
-                postMedia.setType(MediaType.VIDEO);
-                postMedia.setSize((int) file.getSize() / 1024);
-                postMedia.setVisualIndex(indexes.get(files.indexOf(file)));
-                int[] dimensions = getVideoDimensions(file);
-                postMedia.setWidth(dimensions[0]);
-                postMedia.setHeight(dimensions[1]);
-                return postMedia;
-            }).collect(Collectors.toList());
-        });
+        List<CompletableFuture<PostMedia>> futures = IntStream.range(0, files.size())
+                .mapToObj(i -> {
+                    MultipartFile file = files.get(i);
+                    int index = indexes.get(i);
+
+                    return uploadFileToS3Async("2502-post-video", userId, file)
+                            .thenApply(url -> {
+                                PostMedia postMedia = new PostMedia();
+                                postMedia.setPostId(postId);
+                                postMedia.setUrl(url);
+                                postMedia.setType(MediaType.VIDEO);
+                                postMedia.setSize((int) file.getSize() / 1024);
+                                postMedia.setVisualIndex(index);
+
+                                int[] dimensions = getVideoDimensions(file);
+                                postMedia.setWidth(dimensions[0]);
+                                postMedia.setHeight(dimensions[1]);
+
+                                return postMedia;
+                            });
+                })
+                .toList();
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> futures.stream().map(CompletableFuture::join).collect(Collectors.toList()));
     }
 
 }

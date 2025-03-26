@@ -1,9 +1,5 @@
 package com.example.trananhthi.common;
 
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.trananhthi.util.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.SneakyThrows;
@@ -22,12 +18,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.LocaleResolver;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,7 +45,9 @@ public abstract class BaseServiceImpl<E extends BaseEntity, R extends CrudReposi
     @Autowired
     private Environment env;
     @Autowired
-    private AmazonS3 amazonS3;
+    private S3Client s3Client;
+    @Autowired
+    private S3AsyncClient s3AsyncClient;
 
     private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
@@ -105,31 +111,68 @@ public abstract class BaseServiceImpl<E extends BaseEntity, R extends CrudReposi
 
     @SneakyThrows
     public String uploadFileToS3(String bucketName, String folder, MultipartFile file) {
-
         if (bucketName == null || bucketName.isEmpty()) {
             throw new IllegalArgumentException("Bucket name must not be null or empty");
         }
         if (folder == null || folder.isEmpty()) {
             throw new IllegalArgumentException("Folder name must not be null or empty");
         }
-        if (file == null) {
+        if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("File must not be null");
         }
 
-        String fileUrl;
         String fileName = folder + "/" + Utils.generateFileName(file);
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
-        metadata.setContentType(file.getContentType());
-        try{
-            amazonS3.putObject(new PutObjectRequest(bucketName,fileName,file.getInputStream(), metadata));
-            fileUrl = Objects.requireNonNull(env.getProperty("aws.s3.endpoint")) + "/" + bucketName + "/" + fileName;
+        String fileUrl = Objects.requireNonNull(env.getProperty("aws.s3.endpoint")) + "/" + bucketName + "/" + fileName;
+
+        try {
+            // Cấu hình request cho S3 v2
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .contentType(file.getContentType())
+                    .build();
+
+            // Upload file lên S3
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
+
+        } catch (S3Exception | IOException e) {
+            throw new IllegalStateException("Failed to upload the file to S3", e);
         }
-        catch (AmazonServiceException e)
-        {
-            throw new IllegalStateException("Failed to upload the file", e);
-        }
+
         return fileUrl;
+    }
+
+    public CompletableFuture<String> uploadFileToS3Async(String bucketName, String folder, MultipartFile file) {
+        if (bucketName == null || bucketName.isEmpty()) {
+            throw new IllegalArgumentException("Bucket name must not be null or empty");
+        }
+        if (folder == null || folder.isEmpty()) {
+            throw new IllegalArgumentException("Folder name must not be null or empty");
+        }
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File must not be null");
+        }
+
+        String fileName = folder + "/" + Utils.generateFileName(file);
+        String fileUrl = Objects.requireNonNull(env.getProperty("aws.s3.endpoint")) + "/" + bucketName + "/" + fileName;
+
+        try {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(fileName)
+                    .contentType(file.getContentType())
+                    .build();
+
+            // Upload file bất đồng bộ
+            return s3AsyncClient.putObject(putObjectRequest, AsyncRequestBody.fromBytes(file.getBytes()))
+                    .thenApply(response -> fileUrl)
+                    .exceptionally(e -> {
+                        throw new IllegalStateException("Failed to upload the file to S3", e);
+                    });
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Error preparing file upload", e);
+        }
     }
 
     public BaseServiceImpl() {}
