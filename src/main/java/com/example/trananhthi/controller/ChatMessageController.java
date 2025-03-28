@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +29,7 @@ public class ChatMessageController extends BaseController {
     }
 
     @MessageMapping(V1 + ROOT)
-    public void processMessage(@Payload ChatMessage chatMessage) {
-        chatMessageService.processMessage(chatMessage);
+    public void processMessage(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor accessor) {
+        chatMessageService.processMessage(chatMessage, accessor);
     }
 }

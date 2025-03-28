@@ -1,7 +1,10 @@
 package com.example.trananhthi.component;
 
+import com.example.trananhthi.message.MessageCodes;
 import com.example.trananhthi.service.JwtService;
 import com.example.trananhthi.service.UserAccountService;
+import com.example.trananhthi.util.Utils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,11 +26,13 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-
     private final JwtService jwtService;
+
     private final UserAccountService userAccountService;
     private final RequestMatcher uriMatcher = new OrRequestMatcher(
             new AntPathRequestMatcher("/api/v1/authenticate/**"),
@@ -41,7 +46,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
             String authHeader = request.getHeader("Authorization");
             String token;
             String email;
@@ -52,31 +58,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
                 catch (ExpiredJwtException e)
                 {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write("{\"statusCode\": 401,\"key\":\"TokenIsExpired\",\"message\": \"Token của bạn hết hạn\", \"date\": \"" + new Date() +  "\" }");
+                    sendJsonErrorResponse(response, HttpStatus.UNAUTHORIZED, MessageCodes.TOKEN_EXPIRED, request);
                     return;
                 }
                 catch (Exception e)
                 {
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    response.getWriter().write("{\"statusCode\": 401,\"key\":\"TokenIsInvalid\", \"message\": \"Mã Token không hợp lệ\" , \"date\": \"" + new Date() +  "\" }");
+                    sendJsonErrorResponse(response, HttpStatus.UNAUTHORIZED, MessageCodes.TOKEN_INVALID, request);
                     return;
                 }
             }
             else{
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"statusCode\": 401,\"key\":\"YouDoNotHavePermission\",\"message\": \"Bạn không có quyền truy cập\", \"date\": \"" + new Date() +  "\" }" );
+                sendJsonErrorResponse(response, HttpStatus.UNAUTHORIZED, MessageCodes.PERMISSION_DENIED, request);
                 return;
             }
             if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userAccountService.loadUserByUsername(email);
-                if (jwtService.validateToken(token, userDetails)) {
+                if (jwtService.validateToken(token)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -89,5 +86,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         RequestMatcher matcher = new NegatedRequestMatcher(uriMatcher);
         return !matcher.matches(request);
+    }
+
+    private void sendJsonErrorResponse(HttpServletResponse response, HttpStatus status, String messageKey,
+                                       HttpServletRequest request) throws IOException {
+        response.setStatus(status.value());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String errorMessage = Utils.getMessageCode(messageKey, request);
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("statusCode", status.value());
+        errorResponse.put("key", messageKey);
+        errorResponse.put("message", errorMessage);
+        errorResponse.put("date", new Date().toString());
+
+        response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
     }
 }

@@ -1,11 +1,13 @@
 package com.example.trananhthi.service.impl;
 
 import com.example.trananhthi.service.JwtService;
+import com.example.trananhthi.service.UserAccountService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,12 @@ import java.util.function.Function;
 
 @Service
 public class JwtServiceImpl implements JwtService {
+    private final UserAccountService userAccountService;
     private static final String JWT_SECRET = "TranAnhThiFacebookClone1234567891011121314151617181920";
+
+    public JwtServiceImpl(@Lazy UserAccountService userAccountService) {
+        this.userAccountService = userAccountService;
+    }
 
     @Override
     public String generateToken(String email, String id, String role) {
@@ -71,7 +78,9 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token) {
+        String email = extractUsername(token);
+        UserDetails userDetails = userAccountService.loadUserByUsername(email);
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }

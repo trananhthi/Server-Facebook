@@ -19,7 +19,7 @@ public class MessageCodes {
     public static final String EMAIL_OR_PASSWORD_INCORRECT = "email.or.password.incorrect";
     /** refresh.token.isinexistent=Refresh token is inexistent */
     public static final String REFRESH_TOKEN_ISINEXISTENT = "refresh.token.isinexistent";
-    /** internal.server.error=Internal server error */
+    /** internal.server.error=An error occurred from the system */
     public static final String INTERNAL_SERVER_ERROR = "internal.server.error";
     /** account.notExist=Account does not exist: {0} */
     public static final String ACCOUNT_NOTEXIST = "account.notExist";
@@ -41,6 +41,12 @@ public class MessageCodes {
     public static final String USER_NOTFOUND = "user.notFound";
     /** privacy.notValid=Privacy is not valid */
     public static final String PRIVACY_NOTVALID = "privacy.notValid";
+    /** token.expired=Token is expired */
+    public static final String TOKEN_EXPIRED = "token.expired";
+    /** token.invalid=Token is invalid */
+    public static final String TOKEN_INVALID = "token.invalid";
+    /** permission.denied=Permission denied */
+    public static final String PERMISSION_DENIED = "permission.denied";
     /** userPost.notFound=Post not found with id: {0} */
     public static final String USERPOST_NOTFOUND = "userPost.notFound";
     /** userPost.notBelong=You do not have permission to edit this post */

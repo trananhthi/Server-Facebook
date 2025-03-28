@@ -13,7 +13,7 @@ public interface JwtService {
 
     String extractUsername(String token);
 
-    Boolean validateToken(String token, UserDetails userDetails);
+    Boolean validateToken(String token);
 
     <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 }
