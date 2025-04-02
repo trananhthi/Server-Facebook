@@ -1,8 +1,8 @@
 package com.example.trananhthi.service;
 
-import com.example.trananhthi.dto.request.ConfirmCodeRequest;
-import com.example.trananhthi.dto.request.SignInRequest;
-import com.example.trananhthi.dto.response.SignInResponse;
+import com.example.trananhthi.model.request.ConfirmCodeRequest;
+import com.example.trananhthi.model.request.SignInRequest;
+import com.example.trananhthi.model.response.SignInResponse;
 import com.example.trananhthi.entity.UserAccount;
 import jakarta.servlet.http.HttpServletRequest;
 

@@ -2,6 +2,7 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.entity.ChatMessage;
+import com.example.trananhthi.model.TypingStatus;
 import com.example.trananhthi.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -32,4 +33,10 @@ public class ChatMessageController extends BaseController {
     public void processMessage(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor accessor) {
         chatMessageService.processMessage(chatMessage, accessor);
     }
+
+    @MessageMapping(V1 + ROOT + "/typing")
+    public void processTyping(@Payload TypingStatus typingStatus, SimpMessageHeaderAccessor accessor) {
+        chatMessageService.processTyping(typingStatus, accessor);
+    }
+
 }

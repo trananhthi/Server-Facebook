@@ -1,4 +1,4 @@
-package com.example.trananhthi.dto.request;
+package com.example.trananhthi.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

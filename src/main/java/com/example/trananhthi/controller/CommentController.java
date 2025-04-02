@@ -2,7 +2,7 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
 import com.example.trananhthi.dto.CommentDto;
-import com.example.trananhthi.dto.response.Top2LatestCommentsDTO;
+import com.example.trananhthi.model.response.Top2LatestCommentsDTO;
 import com.example.trananhthi.enumtype.Status;
 import com.example.trananhthi.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;

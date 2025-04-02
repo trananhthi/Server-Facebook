@@ -5,7 +5,7 @@ import com.example.trananhthi.context.UserContext;
 import com.example.trananhthi.dto.PostMediaDto;
 import com.example.trananhthi.dto.RestPage;
 import com.example.trananhthi.dto.UserPostDto;
-import com.example.trananhthi.dto.request.CreatePostDto;
+import com.example.trananhthi.model.request.CreatePostDto;
 import com.example.trananhthi.entity.PostMedia;
 import com.example.trananhthi.entity.UserAccount;
 import com.example.trananhthi.entity.UserPost;

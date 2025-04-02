@@ -1,6 +1,6 @@
 package com.example.trananhthi.exception;
 
-import com.example.trananhthi.dto.response.CustomResponse;
+import com.example.trananhthi.model.response.CustomResponse;
 import com.example.trananhthi.message.MessageCodes;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;

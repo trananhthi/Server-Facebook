@@ -1,7 +1,7 @@
 package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
-import com.example.trananhthi.dto.request.CreatePostDto;
+import com.example.trananhthi.model.request.CreatePostDto;
 import com.example.trananhthi.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

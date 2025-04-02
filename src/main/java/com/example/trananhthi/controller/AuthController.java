@@ -2,10 +2,12 @@ package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.*;
 import com.example.trananhthi.component.Base64Encoding;
-import com.example.trananhthi.dto.request.*;
-import com.example.trananhthi.dto.response.CustomResponse;
+import com.example.trananhthi.model.response.CustomResponse;
 import com.example.trananhthi.entity.UserAccount;
 import com.example.trananhthi.message.MessageCodes;
+import com.example.trananhthi.model.request.ConfirmCodeRequest;
+import com.example.trananhthi.model.request.SignInRequest;
+import com.example.trananhthi.model.request.TokenRefreshRequest;
 import com.example.trananhthi.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

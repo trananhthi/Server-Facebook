@@ -3,6 +3,9 @@ package com.example.trananhthi.service.impl;
 import com.example.trananhthi.entity.ChatMessage;
 import com.example.trananhthi.entity.ChatRoom;
 import com.example.trananhthi.enumtype.Status;
+import com.example.trananhthi.enumtype.WSEvent;
+import com.example.trananhthi.model.TypingStatus;
+import com.example.trananhthi.model.WSEventPayload;
 import com.example.trananhthi.repository.ChatMessageRepository;
 import com.example.trananhthi.repository.ChatRoomRepository;
 import com.example.trananhthi.service.ChatMessageService;
@@ -36,13 +39,34 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         {
             chatRoom.setLastMessageTime(chatMessage.getCreatedAt());
             chatRoomRepository.save(chatRoom);
+            WSEventPayload<ChatMessage> payload = new WSEventPayload<>();
+            payload.setEvent(WSEvent.SEND_MESSAGE);
+            payload.setData(savedMsg);
             simpMessagingTemplate.convertAndSendToUser(Objects.equals(userId, chatRoom.getUserId1()) ? chatRoom.getUserId2() : chatRoom.getUserId1(),
-                    "/queue/messages" , savedMsg );
+                    "/queue/messages" , payload );
         }
         else
         {
             throw new RuntimeException("Chat room not found");
         }
 
+    }
+
+    @Override
+    public void processTyping(TypingStatus typingStatus, SimpMessageHeaderAccessor accessor) {
+        String userId = (String) Objects.requireNonNull(accessor.getSessionAttributes()).get("userId");
+        ChatRoom chatRoom = chatRoomRepository.findById(typingStatus.getChatRoomId()).orElse(null);
+        if (chatRoom != null)
+        {
+            WSEventPayload<TypingStatus> payload = new WSEventPayload<>();
+            payload.setEvent(WSEvent.TYPING);
+            payload.setData(typingStatus);
+            simpMessagingTemplate.convertAndSendToUser(Objects.equals(userId, chatRoom.getUserId1()) ? chatRoom.getUserId2() : chatRoom.getUserId1(),
+                    "/queue/typing" , payload );
+        }
+        else
+        {
+            throw new RuntimeException("Chat room not found");
+        }
     }
 }

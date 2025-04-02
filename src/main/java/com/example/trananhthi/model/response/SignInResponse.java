@@ -1,4 +1,4 @@
-package com.example.trananhthi.dto.response;
+package com.example.trananhthi.model.response;
 
 import com.example.trananhthi.dto.UserAccountDto;
 import lombok.AllArgsConstructor;

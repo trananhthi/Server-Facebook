@@ -1,7 +1,7 @@
 package com.example.trananhthi.service;
 
 import com.example.trananhthi.dto.RestPage;
-import com.example.trananhthi.dto.request.CreatePostDto;
+import com.example.trananhthi.model.request.CreatePostDto;
 import com.example.trananhthi.dto.UserPostDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Pageable;

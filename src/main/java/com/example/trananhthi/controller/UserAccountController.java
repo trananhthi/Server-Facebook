@@ -1,7 +1,7 @@
 package com.example.trananhthi.controller;
 
 import com.example.trananhthi.common.BaseController;
-import com.example.trananhthi.dto.request.UpdatePrivacyDefaultDto;
+import com.example.trananhthi.model.request.UpdatePrivacyDefaultDto;
 import com.example.trananhthi.dto.UserAccountDto;
 import com.example.trananhthi.service.UserAccountService;
 import jakarta.servlet.http.HttpServletRequest;

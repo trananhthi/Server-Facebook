@@ -1,4 +1,4 @@
-package com.example.trananhthi.dto.request;
+package com.example.trananhthi.model.request;
 
 import com.example.trananhthi.entity.UserPost;
 import com.example.trananhthi.enumtype.Privacy;
